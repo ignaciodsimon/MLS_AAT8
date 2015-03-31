@@ -1,0 +1,3 @@
+:)
+
+http://spartanideas.msu.edu/2014/06/20/an-introduction-to-parallel-programming-using-pythons-multiprocessing-module/
