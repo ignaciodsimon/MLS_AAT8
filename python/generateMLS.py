@@ -1,6 +1,10 @@
 """
 Functions to generate MLS signals that can be used for impulse-response measuring.
 
+Example of use:
+    generateMLS(sequenceLength=16000)
+
+
 Joe.
 """
 

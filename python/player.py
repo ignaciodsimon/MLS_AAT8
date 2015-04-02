@@ -9,7 +9,6 @@ Joe.
 """
 
 import pyaudio
-import numpy
 
 
 def twosComplementToInt(msb, lsb):
