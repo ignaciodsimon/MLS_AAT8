@@ -1,8 +1,9 @@
 import pyaudio
 import numpy
+import player
 
 
-def rec(_channels, _duration, _fs, _nbits):
+def rec(_channels ,_duration, _fs, _nbits):
     """
     Records a signal from the microphone
 
@@ -11,8 +12,6 @@ def rec(_channels, _duration, _fs, _nbits):
     :param _fs: Sampling frequency
     :param _nbits: Number of bits
     :return: Recording data
-
-    Jonas
     """
 
     if _nbits == 8:
@@ -20,6 +19,7 @@ def rec(_channels, _duration, _fs, _nbits):
     elif _nbits == 16:
         FORMAT = pyaudio.paInt16
     else: FORMAT = pyaudio.paInt16
+
 
     p = pyaudio.PyAudio()
     buffer = 1024
@@ -33,9 +33,10 @@ def rec(_channels, _duration, _fs, _nbits):
 
     for i in range(0, int(_fs / buffer * (_duration/_fs))):
         data = stream.read(buffer)
-        x = numpy.fromstring(data, numpy.int16)  # convert to ints
+        twos = numpy.fromstring(data, numpy.int16)  # convert to ints
+        x = player.twosComplementToInt(twos[i+1], twos[i])
         frames.append(x) # 2 bytes(16 bits) per channel
-        x.tostring()  # convert back to data stream
+        twos.tostring()  # convert back to data stream
 
     stream.stop_stream()
     stream.close()
