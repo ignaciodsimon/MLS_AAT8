@@ -1,3 +1,9 @@
+"""
+Functions to generate MLS signals that can be used for impulse-response measuring.
+
+Joe.
+"""
+
 import numpy
 
 
