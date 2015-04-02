@@ -1,6 +1,6 @@
 import pyaudio
 import numpy
-import matplotlib.pyplot as plot
+
 
 def rec(_channels ,_duration, _fs, _nbits):
     """
@@ -46,22 +46,4 @@ def rec(_channels ,_duration, _fs, _nbits):
     p.terminate()
 
 
-    plot.plot(frames)
-    plot.show()
-
     return(frames)
-
-
-if __name__ == '__main__':
-
-    print('Acquiring recording settings:')
-    print('Enter number of channels:')
-    channels = input()
-    print('Enter duration(samples):')
-    duration = input()
-    print('Enter sampling frequency:')
-    fs = input()
-    print('Enter number of bits:')
-    nbits = input()
-
-    rec(channels,duration,fs,nbits)
