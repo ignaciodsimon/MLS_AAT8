@@ -1,3 +1,9 @@
+"""
+Functions to generate MLS signals that can be used for impulse-response measuring.
+
+Joe.
+"""
+
 import numpy
 
 
@@ -13,27 +19,27 @@ def generateMLS(sequenceLength=16000):
     """
 
     # Normalizes the sequence length
-    sequenceBits = numpy.int(numpy.ceil(1.0 * numpy.log10(sequenceLength) / numpy.log10(2)))
-    sequenceLength = pow(2, sequenceBits)
+    _sequenceBits = numpy.int(numpy.ceil(1.0 * numpy.log10(sequenceLength) / numpy.log10(2)))
+    sequenceLength = pow(2, _sequenceBits)
 
     # Creates the registers
-    mls_registers = [1]*sequenceBits
-    mls_signal = [0]*sequenceLength
+    _mlsRegisters = [1]*_sequenceBits
+    _mlsSignal = [0]*sequenceLength
 
     for n in range(sequenceLength):
         # Last takes the value of first plus second
-        sumValue = numpy.bitwise_xor(mls_registers[0], mls_registers[1])
+        _sumValue = numpy.bitwise_xor(_mlsRegisters[0], _mlsRegisters[1])
 
         # Rotates all registers
-        mls_registers = mls_registers[1:] + mls_registers[:1]
+        _mlsRegisters = _mlsRegisters[1:] + _mlsRegisters[:1]
 
         # Updates last value
-        mls_registers[len(mls_registers)-1] = sumValue
+        _mlsRegisters[len(_mlsRegisters)-1] = _sumValue
 
         # Saves current output
-        mls_signal[n] = mls_registers[0]
+        _mlsSignal[n] = _mlsRegisters[0]
 
     # Corrects generated signal to obtain zero mean
-    mls_signal = mls_signal - numpy.mean(mls_signal)
+    _mlsSignal = _mlsSignal - numpy.mean(_mlsSignal)
 
-    return mls_signal
+    return _mlsSignal
