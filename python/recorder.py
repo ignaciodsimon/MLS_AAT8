@@ -12,12 +12,12 @@ def rec(_channels ,_duration, _fs, _nbits):
     :param _nbits: Number of bits
     :return: Recording data
     """
+
     if _nbits == 8:
         FORMAT = pyaudio.paInt8
     elif _nbits == 16:
         FORMAT = pyaudio.paInt16
     else: FORMAT = pyaudio.paInt16
-
 
     p = pyaudio.PyAudio()
     buffer = 1024
@@ -27,11 +27,9 @@ def rec(_channels ,_duration, _fs, _nbits):
                     input=True,
                     frames_per_buffer=buffer)
 
-
     print("* recording")
 
     frames = []
-
 
     for i in range(0, int(_fs / buffer * (_duration/_fs))):
         data = stream.read(buffer)
@@ -44,6 +42,5 @@ def rec(_channels ,_duration, _fs, _nbits):
     stream.stop_stream()
     stream.close()
     p.terminate()
-
 
     return(frames)
