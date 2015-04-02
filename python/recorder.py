@@ -2,7 +2,7 @@ import pyaudio
 import numpy
 
 
-def rec(_channels ,_duration, _fs, _nbits):
+def rec(_channels, _duration, _fs, _nbits):
     """
     Records a signal from the microphone
 
@@ -11,6 +11,8 @@ def rec(_channels ,_duration, _fs, _nbits):
     :param _fs: Sampling frequency
     :param _nbits: Number of bits
     :return: Recording data
+
+    Jonas
     """
 
     if _nbits == 8:
@@ -27,8 +29,6 @@ def rec(_channels ,_duration, _fs, _nbits):
                     input=True,
                     frames_per_buffer=buffer)
 
-    print("* recording")
-
     frames = []
 
     for i in range(0, int(_fs / buffer * (_duration/_fs))):
@@ -37,10 +37,8 @@ def rec(_channels ,_duration, _fs, _nbits):
         frames.append(x) # 2 bytes(16 bits) per channel
         x.tostring()  # convert back to data stream
 
-    print("* done recording")
-
     stream.stop_stream()
     stream.close()
     p.terminate()
 
-    return(frames)
+    return frames
