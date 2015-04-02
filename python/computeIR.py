@@ -1,3 +1,13 @@
+"""
+Functions to estimate impulse response from recorded signal.
+
+Example:
+    computeCircularXCorr(signalA, signalB)
+
+
+Joe.
+"""
+
 import numpy
 from math import sqrt
 
