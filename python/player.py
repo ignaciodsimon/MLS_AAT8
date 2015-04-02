@@ -1,3 +1,9 @@
+"""
+Functions to send audio data to sound card.
+
+Joe.
+"""
+
 import pyaudio
 import numpy
 
@@ -13,13 +19,13 @@ def twosComplementToInt(msb, lsb):
     """
 
     # Counts the two parts of the number
-    number = msb*256 + lsb
+    _number = msb*256 + lsb
 
     # Corrects the sign if necessary
     if msb > 127:
-        number -= 65536
+        _number -= 65536
 
-    return number
+    return _number
 
 
 def intToTwosComplement(inputNumber):
@@ -31,13 +37,13 @@ def intToTwosComplement(inputNumber):
     :return: 8-bit registers in order: [msb, lsb]
     """
 
-    msb = int(abs(inputNumber) / 256)
-    lsb = abs(inputNumber) - (msb*256)
+    _msb = int(abs(inputNumber) / 256)
+    _lsb = abs(inputNumber) - (_msb*256)
     if inputNumber < 0:
-        msb = 255 - msb
-        lsb = 255 - lsb
+        _msb = 255 - _msb
+        _lsb = 255 - _lsb
 
-    return [msb, lsb]
+    return [_msb, _lsb]
 
 
 def convertStreamToChannels(stereoStream):
@@ -51,17 +57,17 @@ def convertStreamToChannels(stereoStream):
     :return: Separated channels in format: [[L1 L2 L3 ...], [R1 R2 R3 ...]]
     """
 
-    channelL = [0]*(len(stereoStream)/4)
-    channelR = [0]*(len(stereoStream)/4)
-    sampIndex = 0
+    _channelL = [0]*(len(stereoStream)/4)
+    _channelR = [0]*(len(stereoStream)/4)
+    _sampIndex = 0
     for n in range(0, len(stereoStream)-4, 4):
 
-        channelL[sampIndex] = twosComplementToInt(ord(stereoStream[n+1]), ord(stereoStream[n]))
-        channelR[sampIndex] = twosComplementToInt(ord(stereoStream[n+3]), ord(stereoStream[n+2]))
+        _channelL[_sampIndex] = twosComplementToInt(ord(stereoStream[n+1]), ord(stereoStream[n]))
+        _channelR[_sampIndex] = twosComplementToInt(ord(stereoStream[n+3]), ord(stereoStream[n+2]))
 
-        sampIndex += 1
+        _sampIndex += 1
 
-    return [channelL, channelR]
+    return [_channelL, _channelR]
 
 
 def convertChannelsToStream(channelL, channelR, normalize=False):
@@ -78,24 +84,24 @@ def convertChannelsToStream(channelL, channelR, normalize=False):
 
     # Calculates normalization value
     if normalize:
-        normalizationValue = max(max(channelL), max(channelR))
+        _normalizationValue = max(max(channelL), max(channelR))
     else:
-        normalizationValue = 1.0
+        _normalizationValue = 1.0
 
-    outputStream = ''
+    _outputStream = ''
     for n in range(len(channelL)):
 
         # Adapts input signals (signed float) to 16-bit signed integer range
-        currentLSample = int(channelL[n] * float(pow(2, 16))/2 / normalizationValue)
-        currentRSample = int(channelR[n] * float(pow(2, 16))/2 / normalizationValue)
+        _currentLSample = int(channelL[n] * float(pow(2, 16))/2 / _normalizationValue)
+        _currentRSample = int(channelR[n] * float(pow(2, 16))/2 / _normalizationValue)
 
-        samplesL = intToTwosComplement(currentLSample)
-        samplesR = intToTwosComplement(currentRSample)
+        _samplesL = intToTwosComplement(_currentLSample)
+        _samplesR = intToTwosComplement(_currentRSample)
 
-        outputStream = outputStream + chr(samplesL[1]) + chr(samplesL[0])
-        outputStream = outputStream + chr(samplesR[1]) + chr(samplesR[0])
+        _outputStream = _outputStream + chr(_samplesL[1]) + chr(_samplesL[0])
+        _outputStream = _outputStream + chr(_samplesR[1]) + chr(_samplesR[0])
 
-    return outputStream
+    return _outputStream
 
 
 def playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False):
@@ -113,10 +119,10 @@ def playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False):
     :return:
     """
     # Creates audio player
-    p = pyaudio.PyAudio()
+    _audioPlayer = pyaudio.PyAudio()
 
     # Configures audio player with input parameters
-    stream = p.open(format=p.get_format_from_width(2),
+    _stream = _audioPlayer.open(format=_audioPlayer.get_format_from_width(2),
                     channels=2,
                     rate=samplingFreq,
                     output=True)
@@ -125,12 +131,12 @@ def playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False):
     signalStream = convertChannelsToStream(signalLeft, signalRight, normalize)
 
     # Sends stream to audio player
-    stream.write(signalStream)
+    _stream.write(signalStream)
 
     # Stop, close and free
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
+    _stream.stop_stream()
+    _stream.close()
+    _audioPlayer.terminate()
 
 
 # # --== Complete recording code ==--
