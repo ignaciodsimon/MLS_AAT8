@@ -1,6 +1,10 @@
 """
 Functions to send audio data to sound card.
 
+Example of use:
+    playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False)
+
+
 Joe.
 """
 
@@ -167,11 +171,11 @@ def playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False):
 # p.terminate()
 
 
-# --== Complete playback code ==--
-
-# Generates the signals
-signal1 = [1.0 * numpy.sin(2 * numpy.pi * 1000 * n/44100) for n in range(44100)]
-signal2 = [1.0 * numpy.sin(2 * numpy.pi * 2000 * n/44100) for n in range(44100)]
-
-# Sends them to the sound card
-playSignals(signal1, signal2, samplingFreq=44100, normalize=False)
+# # --== Complete playback code ==--
+#
+# # Generates the signals
+# signal1 = [1.0 * numpy.sin(2 * numpy.pi * 1000 * n/44100) for n in range(44100)]
+# signal2 = [1.0 * numpy.sin(2 * numpy.pi * 2000 * n/44100) for n in range(44100)]
+#
+# # Sends them to the sound card
+# playSignals(signal1, signal2, samplingFreq=44100, normalize=False)
