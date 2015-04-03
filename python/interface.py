@@ -22,12 +22,12 @@ def askForNumber(messageText):
 
 # Presents the program to the user
 print "\n" \
-      "****************************************************\n" \
-      "*                                                  *\n" \
-      "*  DUAL CHANNEL IMPULSE RESPONSE MEASURING SYSTEM  *\n" \
-      "*  MSc. Acoustics and Audio Technology - AAU 2015  *\n" \
-      "*                                                  *\n" \
-      "****************************************************\n\n"
+      "  ****************************************************\n" \
+      "  *                                                  *\n" \
+      "  *  DUAL CHANNEL IMPULSE RESPONSE MEASURING SYSTEM  *\n" \
+      "  *  MSc. Acoustics and Audio Technology - AAU 2015  *\n" \
+      "  *                                                  *\n" \
+      "  ****************************************************\n\n"
 
 myIR = logic.executeMeasurement(32768,44100,0.5,0.25,5.0)
 plot.plot(myIR)
