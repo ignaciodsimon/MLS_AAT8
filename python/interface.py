@@ -12,3 +12,12 @@ Parts:
 Joe.
 """
 
+import recorder
+import numpy
+import matplotlib.pyplot as plot
+
+data = recorder.rec(_channels=2, _duration=60000, _fs=44100, _nbits=16)
+
+print numpy.shape(data)
+# plot.plot(data)
+# plot.show()
