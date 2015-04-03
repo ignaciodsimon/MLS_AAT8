@@ -1,4 +1,5 @@
-
+import logic
+import matplotlib.pyplot as plot
 
 def askForNumber(messageText):
     """
@@ -28,3 +29,6 @@ print "\n" \
       "*                                                  *\n" \
       "****************************************************\n\n"
 
+myIR = logic.executeMeasurement(32768,44100,0.5,0.25,5.0)
+plot.plot(myIR)
+plot.show()
