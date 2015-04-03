@@ -34,8 +34,9 @@ def rec(_channels ,_duration, _fs, _nbits):
     for i in range(0, int(_fs / buffer * (_duration/_fs))):
         data = stream.read(buffer)
         twos = numpy.fromstring(data, numpy.int16)  # convert to ints
-        x = player.twosComplementToInt(twos[i+1], twos[i])
-        frames.append(x) # 2 bytes(16 bits) per channel
+        for n in range(0, len(twos)-1):
+            x = player.twosComplementToInt(twos[n+1], twos[n])
+            frames.append(x) # 2 bytes(16 bits) per channel
         twos.tostring()  # convert back to data stream
 
     stream.stop_stream()
@@ -43,3 +44,5 @@ def rec(_channels ,_duration, _fs, _nbits):
     p.terminate()
 
     return frames
+
+rec(2,44100,44100,16)

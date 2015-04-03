@@ -1,3 +1,4 @@
 :)
 
-http://spartanideas.msu.edu/2014/06/20/an-introduction-to-parallel-programming-using-pythons-multiprocessing-module/
+    http://spartanideas.msu.edu/2014/06/20/an-introduction-to-parallel-programming-using-pythons-multiprocessing-module/
+    http://stackoverflow.com/questions/20548628/how-to-do-parallel-programming-in-python
