@@ -1,43 +1,43 @@
-#import numpy as np
-#import datetime
+import numpy as np
+import datetime
 import multiprocessing as mp
 
 
-#def _dummy1(n, p, o, t):
-#    """
-#    This is a dummy function used to test multiprocessing.
-#    It displays the start second and end second of the function
-#
-#    """
+def _dummy1(n, p, o, t):
+    """
+    This is a dummy function used to test multiprocessing.
+    It displays the start second and end second of the function
 
-#   now1 = datetime.datetime.now()
-#    milisec1 = now1.microsecond/1000.0
-#    print '_dummy1 started at %d seconds' % now1.second, '%f miliseconds' % milisec1
-#    A = np.ones([n, n])
-#    B = np.ones([n, n])
-#    C = A*B
-#    now2 = datetime.datetime.now()
-#    milisec2 = now2.microsecond/1000.0
-#   print '_dummy1 finished at %d seconds' % now2.second, '%f miliseconds' % milisec2
-#    print p, o, t
+    """
 
-#def _dummy2(n, p, o):
-#    """
-#    This is a dummy function used to test multiprocessing.
-#    It displays the start time of the function
-#
-#    """
+    now1 = datetime.datetime.now()
+    milisec1 = now1.microsecond/1000.0
+    print '_dummy1 started at %d seconds' % now1.second, '%f miliseconds' % milisec1
+    A = np.ones([n, n])
+    B = np.ones([n, n])
+    C = A*B
+    now2 = datetime.datetime.now()
+    milisec2 = now2.microsecond/1000.0
+    print '_dummy1 finished at %d seconds' % now2.second, '%f miliseconds' % milisec2
+    print p, o, t
 
-#    now3 = datetime.datetime.now()
-#    milisec3 = now3.microsecond/1000.0
-#    print '_dummy2 started at %d seconds and' % now3.second, '%f miliseconds' % milisec3
-#    A = np.ones([n, n])
-#    B = np.ones([n, n])
-#    C = A*B
-#    now4 = datetime.datetime.now()
-#    milisec4 = now4.microsecond/1000.0
-#    print '_dummy2 finished at %d seconds and' % now4.second, '%f miliseconds' % milisec4
-#    print p, o
+def _dummy2(n, p, o):
+   """
+   This is a dummy function used to test multiprocessing.
+   It displays the start time of the function
+
+   """
+
+   now3 = datetime.datetime.now()
+   milisec3 = now3.microsecond/1000.0
+   print '_dummy2 started at %d seconds and' % now3.second, '%f miliseconds' % milisec3
+   A = np.ones([n, n])
+   B = np.ones([n, n])
+   C = A*B
+   now4 = datetime.datetime.now()
+   milisec4 = now4.microsecond/1000.0
+   print '_dummy2 finished at %d seconds and' % now4.second, '%f miliseconds' % milisec4
+   print p, o
 
 
 # def _multiprocessing(function1, f1arg1, f1arg2, f1arg3, f1arg4, function2, f2arg1, f2arg2, f2arg3, f2arg4):
@@ -81,8 +81,8 @@ def _multiprocessing(function1, f1args, function2, f2args):
 
     print 'Finished parallel processing'
 
-#_dummy1args = [100, 1, 1, 1]
-#_dummy2args = [1000, 2, 2]
+_dummy1args = [100, 1, 1, 1]
+_dummy2args = [1000, 2, 2]
 
-#_multiprocessing(_dummy1, _dummy1args, _dummy2, _dummy2args)
+_multiprocessing(_dummy1, _dummy1args, _dummy2, _dummy2args)
 
