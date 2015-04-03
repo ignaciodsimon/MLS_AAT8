@@ -2,7 +2,7 @@
 Functions to generate MLS signals that can be used for impulse-response measuring.
 
 Example of use:
-    generateMLS(sequenceLength=16000)
+    generateMLS(sequenceLength=16000, amplitude=1)
 
 
 Joe.
@@ -11,7 +11,7 @@ Joe.
 import numpy
 
 
-def generateMLS(sequenceLength=16000):
+def generateMLS(sequenceLength=16000, amplitude=1):
     """
     Generates a MLS (Maximum Length Sequence) with corrected (zero) mean of the given sequence length.
     If the given sequence length is not standard (a power of two), it would be corrected to the closest
@@ -45,5 +45,8 @@ def generateMLS(sequenceLength=16000):
 
     # Corrects generated signal to obtain zero mean
     _mlsSignal = _mlsSignal - numpy.mean(_mlsSignal)
+
+    # Corrects signal to desired amplitude
+    _mlsSignal = numpy.dot(_mlsSignal, amplitude)
 
     return _mlsSignal
