@@ -1,9 +1,10 @@
 """
-Functions to estimate impulse response from recorded signal.
+Functions for estimating impulse response from recorded signal and for correcting a signal with
+a known impulse response.
 
 Example:
     computeCircularXCorr(signalA, signalB)
-
+    correctSignalWithIR(inputSignal, impulseResponse)
 
 Joe.
 """
@@ -12,13 +13,44 @@ import numpy
 from math import sqrt
 
 
+def correctSignalWithIR(inputSignal, impulseResponse):
+    """
+    Corrects a recorded signal with a known impulse response. It can be used to correct for
+    the possible delay and non-linear behavior of acquisition system.
+
+    Joe.
+    :param inputSignal: Signal to be corrected.
+    :param impulseResponse: Known impulse response the signal was processed with.
+    :return: Signal corrected (de-convolved).
+    """
+
+    # Computes FFT of input signals
+    _fftSignal = numpy.fft.fft(inputSignal)
+    _fftReference = numpy.fft.fft(impulseResponse)
+
+    # Corrects module and phase
+    _outputModule = numpy.true_divide(abs(_fftSignal), abs(_fftReference))
+    _outputPhase = numpy.subtract(numpy.angle(_fftSignal), numpy.angle(_fftReference))
+
+    # Computes real / imaginary parts
+    _outputRealPart = numpy.multiply(_outputModule, numpy.cos(_outputPhase))
+    _outputImagPart = numpy.multiply(_outputModule, numpy.sin(_outputPhase))
+
+    _outputSpectrum = [0]*len((_outputRealPart))
+    for n in range(len(_outputRealPart)-1):
+        _outputSpectrum[n] = numpy.complex(_outputRealPart[n], _outputImagPart[n])
+
+    # Returns IR of computed spectrum
+    return numpy.real(numpy.fft.ifft(_outputSpectrum))
+
+
 def computeRMSValue(inputSignal):
     """
     Computes the Root Mean Square value of a given signal.
 
     Joe.
-    :param inputSignal: Vector of numbers to process
-    :return: Computed RMS value
+    :param inputSignal: Vector of numbers to process.
+    :return: Computed RMS value.
     """
     _computedRMSValue = sqrt(1.0 / len(inputSignal) * numpy.dot(inputSignal, inputSignal))
 
@@ -31,8 +63,8 @@ def computeCircularXCorr(signalA, signalB):
     same length. If not, they should be padded with zeros before calling this function.
 
     Joe.
-    :param signalA:
-    :param signalB:
+    :param signalA: Signal A.
+    :param signalB: Signal B.
     :return:
     """
 
@@ -40,30 +72,12 @@ def computeCircularXCorr(signalA, signalB):
     # If signal A has more power
     if computeRMSValue(signalA) > computeRMSValue(signalB):
         # Then normalize signal B
-        signalB = numpy.multiply(signalB, float(computeRMSValue(signalA) / computeRMSValue(signalB)))
+        signalB = list(numpy.multiply(signalB, float(computeRMSValue(signalA) / computeRMSValue(signalB))))
     else:
         # Otherwise normalize signal A
-        signalA = numpy.multiply(signalA, float(computeRMSValue(signalB) / computeRMSValue(signalA)))
+        signalA = list(numpy.multiply(signalA, float(computeRMSValue(signalB) / computeRMSValue(signalA))))
 
-    # Computes the circular cross-correlation by displacing one vector and computing the dot
-    # product of the two vectors for every displacement
-    _computedCircXCorr = [0]*len(signalA)
-    for k in range(len(signalA)):
-        _computedCircXCorr[k] = numpy.dot(signalA, signalB)
+    # Computes circular cross-correlation using the FFT
+    _circularXCorr = numpy.fft.ifft(numpy.fft.fft(signalA) * numpy.fft.fft(signalB).conj()).real
 
-        # Rotates vector B
-        signalB = signalB[1:] + signalB[:1]
-
-    return _computedCircXCorr
-
-
-import random
-import matplotlib.pyplot as plot
-
-signal1 = [random.gauss(0, 1) for n in range(4000)]
-signal2 = signal1[150:] + signal1[:150]
-
-crossCorr = computeCircularXCorr(signal2, signal1)
-
-plot.plot(crossCorr)
-plot.show()
+    return _circularXCorr
