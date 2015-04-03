@@ -25,7 +25,6 @@ def rec(numOfChannels, recordingLength, samplFreq, bitDepth):
     # Adjusts recording length to an integer number of frames
     _bufferSize = 1024
     _realRecordingLength = int(numpy.ceil(1.0 * recordingLength / _bufferSize))*_bufferSize
-    _amountOfFramesToRecord = _realRecordingLength / _bufferSize
 
     # Creates the audio recorder with given parameters
     _audioRecorder = pyaudio.PyAudio()
@@ -36,7 +35,7 @@ def rec(numOfChannels, recordingLength, samplFreq, bitDepth):
                                            frames_per_buffer=_bufferSize)
 
     # Records the necessary amount of frames
-    _recordedFrames = _recordingStream.read(_bufferSize * _amountOfFramesToRecord)
+    _recordedFrames = _recordingStream.read(_realRecordingLength)
 
     # Converts recorded frames to 16-bit signed samples
     _outputSamples = player.convertStreamToChannels(_recordedFrames)
