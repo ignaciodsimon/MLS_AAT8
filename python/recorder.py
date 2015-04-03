@@ -3,46 +3,42 @@ import numpy
 import player
 
 
-def rec(_channels ,_duration, _fs, _nbits):
+def rec(numOfChannels, recordingLength, samplFreq, bitDepth):
     """
-    Records a signal from the microphone
+    Captures signals from the default sound card.
 
-    :param _channels: Number of channels
-    :param _duration: Duration of the recording (samples)
-    :param _fs: Sampling frequency
-    :param _nbits: Number of bits
+    :param numOfChannels: Number of channels
+    :param recordingLength: Duration of the recording (samples)
+    :param samplFreq: Sampling frequency
+    :param bitDepth: Number of bits
     :return: Recording data
     """
 
-    if _nbits == 8:
-        FORMAT = pyaudio.paInt8
-    elif _nbits == 16:
-        FORMAT = pyaudio.paInt16
-    else: FORMAT = pyaudio.paInt16
+    # Adjusts bit depth in case it is not in the accepted range
+    if bitDepth == 8:
+        _sampleFormat = pyaudio.paInt8
+    elif bitDepth == 16:
+        _sampleFormat = pyaudio.paInt16
+    else:
+        _sampleFormat = pyaudio.paInt16
 
+    # Adjusts recording length to an integer number of frames
+    _bufferSize = 1024
+    recordingLength = int(numpy.ceil(1.0 * recordingLength / _bufferSize))*_bufferSize
+    _amountOfFramesToRecord = recordingLength / _bufferSize
 
-    p = pyaudio.PyAudio()
-    buffer = 1024
-    stream = p.open(format=FORMAT,
-                    channels=_channels,
-                    rate=_fs,
-                    input=True,
-                    frames_per_buffer=buffer)
+    # Creates the audio recorder with given parameters
+    _audioRecorder = pyaudio.PyAudio()
+    _recordingStream = _audioRecorder.open(format=_sampleFormat,
+                                           channels=numOfChannels,
+                                           rate=samplFreq,
+                                           input=True,
+                                           frames_per_buffer=_bufferSize)
 
-    frames = []
+    # Records the necessary amount of frames
+    _recordedFrames = _recordingStream.read(_bufferSize * _amountOfFramesToRecord)
 
-    for i in range(0, int(_fs / buffer * (_duration/_fs))):
-        data = stream.read(buffer)
-        twos = numpy.fromstring(data, numpy.int16)  # convert to ints
-        for n in range(0, len(twos)-1):
-            x = player.twosComplementToInt(twos[n+1], twos[n])
-            frames.append(x) # 2 bytes(16 bits) per channel
-        twos.tostring()  # convert back to data stream
+    # Converts recorded frames to 16-bit signed samples
+    _outputSamples = player.convertStreamToChannels(_recordedFrames)
 
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
-
-    return frames
-
-rec(2,44100,44100,16)
+    return _outputSamples
