@@ -16,8 +16,10 @@ import recorder
 import numpy
 import matplotlib.pyplot as plot
 
-data = recorder.rec(_channels=2, _duration=60000, _fs=44100, _nbits=16)
+data = recorder.rec(numOfChannels=2, recordingLength=60000, samplFreq=44100, bitDepth=16)
 
+
+# print data
 print numpy.shape(data)
 # plot.plot(data)
 # plot.show()
