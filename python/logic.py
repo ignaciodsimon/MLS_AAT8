@@ -1,18 +1,15 @@
 """
-Main interface of the system.
+Logic layer of the system. Controls the data layer and provides the results to the interface.
 
-Parts:
-    - Initialization, checks if necessary
-    - Obtaining of parameters from user
-    - Adjustment of output signal level
-    - Computation of IR from MLS signal and measurement(s)
-    - Displaying / saving of results
-
+executeMeasurement(_MLSLength=32768,
+                       _samplFreq = 44100,
+                       _signalAmplitude = 0.5,
+                       _preDelayForPlayback = 0.25,
+                       _decayTime = 5.0)
 
 Joe.
 """
 
-import matplotlib.pyplot as plot
 
 # Internal imports
 import recorder
@@ -22,50 +19,55 @@ import computeIR
 import generateMLS
 
 
-# ----------= TEST CONFIGURATION =----------
-_MLSLength = 32768
-_channels = 2
-_samplFreq = 44100
-_signalAmplitude = 0.5
-_preDelayForPlayback = 0.25
-_decayTime = 5.0
+def executeMeasurement(_MLSLength=32768,
+                       _samplFreq = 44100,
+                       _signalAmplitude = 0.5,
+                       _preDelayForPlayback = 0.25,
+                       _decayTime = 5.0):
+    """
+    Logic implementation of the system. Controls the data layer and provides the results
+    of the measurement.
 
+    Joe.
+    :param _MLSLength: Desired length of MLS signal.
+    :param _samplFreq: Sampling frequency.
+    :param _signalAmplitude: Amplitude of MLS signal.
+    :param _preDelayForPlayback: Pre-delay to correct for the latency of sound card.
+    :param _decayTime: Decay time of system-under-test. Should be a bit larger than expected one.
+    :return: Measured impulse response, corrected with the second channel.
+    """
 
-# ----------= TEST EXECUTION =----------
-# Generate the MLS signal
-print "Generating MLS signal ..."
-_MLSSignal = generateMLS.generateMLS(_MLSLength, _signalAmplitude)
+    # Fixed to two channels to compensate for the sound card delay and defects
+    _channels = 2
 
-# Padding MLS signal with zeros at the beginning
-_MLS_WithZeros = [0] * int(round(_preDelayForPlayback * _samplFreq) + _MLSLength)
-_MLS_WithZeros[len(_MLS_WithZeros)-len(_MLSSignal):len(_MLS_WithZeros)] = _MLSSignal
-_MLSSignal = _MLS_WithZeros
+    # Generate the MLS signal
+    _MLSSignal = generateMLS.generateMLS(_MLSLength, _signalAmplitude)
 
-# Recording length is function of MLS length and the system decay time
-_recordingLength = len(_MLSSignal) + int(_samplFreq * _decayTime)
+    # Padding MLS signal with zeros at the beginning
+    _MLS_WithZeros = [0] * int(round(_preDelayForPlayback * _samplFreq) + _MLSLength)
+    _MLS_WithZeros[len(_MLS_WithZeros)-len(_MLSSignal):len(_MLS_WithZeros)] = _MLSSignal
+    _MLSSignal = _MLS_WithZeros
 
-# Player and recorder input arguments in vectors for multitasking
-_recorderArguments = [_channels, _recordingLength, _samplFreq, 16]
-_playerArguments = [_MLSSignal, _MLSSignal, _samplFreq, False]
+    # Recording length is function of MLS length and the system decay time
+    _recordingLength = len(_MLSSignal) + int(_samplFreq * _decayTime)
 
-# Runs player and recorder simultaneously
-print "Running multitask ..."
-[_recorderOutputData, _playerOutputData] = parallelfunctions.runInParallel(recorder.rec, _recorderArguments, player.playSignals, _playerArguments)
+    # Player and recorder input arguments in vectors for multitasking
+    _recorderArguments = [_channels, _recordingLength, _samplFreq, 16]
+    _playerArguments = [_MLSSignal, _MLSSignal, _samplFreq, False]
 
-# Computes IR
-print "Computing IRs ..."
-channelL = _recorderOutputData[0][:]
-channelR = _recorderOutputData[1][:]
+    # Runs player and recorder simultaneously
+    [_recorderOutputData, _playerOutputData] = parallelfunctions.runInParallel(recorder.rec, _recorderArguments, player.playSignals, _playerArguments)
 
-# Padding with zeros of MLS signal
-_paddedMLSSignal = [0]*(len(channelL))
-_paddedMLSSignal[0:len(_MLSSignal)] = _MLSSignal
+    # Computes IR
+    channelL = _recorderOutputData[0][:]
+    channelR = _recorderOutputData[1][:]
 
-_IRLeft = computeIR.computeCircularXCorr(channelL, _paddedMLSSignal)
-_IRRight = computeIR.computeCircularXCorr(channelR, _paddedMLSSignal)
-_corrected = computeIR.correctSignalWithIR(_IRLeft, _IRRight)
+    # Padding with zeros of MLS signal
+    _paddedMLSSignal = [0]*(len(channelL))
+    _paddedMLSSignal[0:len(_MLSSignal)] = _MLSSignal
 
+    _IRLeft = computeIR.computeCircularXCorr(channelL, _paddedMLSSignal)
+    _IRRight = computeIR.computeCircularXCorr(channelR, _paddedMLSSignal)
+    _corrected = computeIR.correctSignalWithIR(_IRLeft, _IRRight)
 
-# ----------= DISPLAY OF RESULTS =----------
-plot.plot(_corrected)
-plot.show()
+    return _corrected
