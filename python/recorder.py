@@ -3,7 +3,7 @@ import numpy
 import player
 
 
-def rec(numOfChannels, recordingLength, samplFreq, bitDepth):
+def rec(numOfChannels, recordingLength, samplFreq, bitDepth, deviceIndex=-1):
     """
     Captures signals from the default sound card.
 
@@ -28,11 +28,21 @@ def rec(numOfChannels, recordingLength, samplFreq, bitDepth):
 
     # Creates the audio recorder with given parameters
     _audioRecorder = pyaudio.PyAudio()
-    _recordingStream = _audioRecorder.open(format=_sampleFormat,
-                                           channels=numOfChannels,
-                                           rate=samplFreq,
-                                           input=True,
-                                           frames_per_buffer=_bufferSize)
+
+    # Uses device index in case it is chosen, default device otherwise
+    if deviceIndex > -1:
+        _recordingStream = _audioRecorder.open(format=_sampleFormat,
+                                               channels=numOfChannels,
+                                               rate=samplFreq,
+                                               input=True,
+                                               frames_per_buffer=_bufferSize,
+                                               output_device_index=deviceIndex)
+    else:
+        _recordingStream = _audioRecorder.open(format=_sampleFormat,
+                                               channels=numOfChannels,
+                                               rate=samplFreq,
+                                               input=True,
+                                               frames_per_buffer=_bufferSize)
 
     # Records the necessary amount of frames
     _recordedFrames = _recordingStream.read(_realRecordingLength)
