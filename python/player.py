@@ -107,7 +107,7 @@ def convertChannelsToStream(channelL, channelR, normalize=False):
     return _outputStream
 
 
-def playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False):
+def playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False, deviceIndex=-1):
     """
     Plays input signals to sound card using the PyAudio library. Input signals are expected
     as float vectors.
@@ -119,16 +119,25 @@ def playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False):
     :param signalLeft: Signal to left output of sound card.
     :param signalRight: Signal to right output of sound card.
     :param normalize: Should normalize input signals
+    :param deviceIndex: Output audio device to use. Omit for default device.
     :return:
     """
     # Creates audio player
     _audioPlayer = pyaudio.PyAudio()
 
     # Configures audio player with input parameters
-    _stream = _audioPlayer.open(format=_audioPlayer.get_format_from_width(2),
-                    channels=2,
-                    rate=samplingFreq,
-                    output=True)
+    if deviceIndex > -1:
+        # Uses device index in case it is chosen, default device otherwise
+        _stream = _audioPlayer.open(format=_audioPlayer.get_format_from_width(2),
+                        channels=2,
+                        rate=samplingFreq,
+                        output=True,
+                        output_device_index=deviceIndex)
+    else:
+        _stream = _audioPlayer.open(format=_audioPlayer.get_format_from_width(2),
+                        channels=2,
+                        rate=samplingFreq,
+                        output=True)
 
     # Converts input signals to Wav stream
     signalStream = convertChannelsToStream(signalLeft, signalRight, normalize)
