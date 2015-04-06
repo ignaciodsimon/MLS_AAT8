@@ -8,18 +8,7 @@ TEXT_2 = "Input device:"
 TEXT_3 = "Output device:"
 TEXT_4 = "- No devices -"
 TEXT_5 = "Test"
-TEXT_6 = "Sampling rates [Hz]: \n" \
-         "  --\n"\
-         "Bit depths [bit]:\n"\
-         "  --\n"\
-         "Input channels:\n"\
-         "  --\n"\
-         "Output channels:\n"\
-         "  --\n"\
-         "Input latency [ms]:\n"\
-         "  --\n"\
-         "Output latency [ms]:\n"\
-         "  --"
+
 TEXT_7 = "  2 - Measurement settings  "
 TEXT_8 = "Generated signal"
 TEXT_9 = "MLS length [samples]:"
@@ -37,3 +26,10 @@ TEXT_20 = "  4 - Execute measurement  "
 TEXT_21 = "START"
 TEXT_22 = "Status: Idle."
 TEXT_23 = "MSc. Acoustics and Audio Technology, 2015 - Aalborg University"
+
+TEXT_24 = "Sampling rates [Hz]:"
+TEXT_25 = "Bit depths [bit]:"
+TEXT_26 = "Input channels:"
+TEXT_27 = "Output channels:"
+TEXT_28 = "Input latency [ms]:"
+TEXT_29 = "Output latency [ms]:"

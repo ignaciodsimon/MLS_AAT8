@@ -36,7 +36,7 @@ class SoundCard:
     outputLatency = -1
 
 
-def countSoundCards():
+def _countSoundCards():
     """
     Returns the amount of available audio devices.
 
@@ -60,7 +60,7 @@ def getAllSoundCardsInfo():
     _soundCards = []
     _devices = pyaudio.PyAudio()
 
-    for n in range(countSoundCards()):
+    for n in range(_countSoundCards()):
 
         # Gets an available audio device
         _currentDevice = _devices.get_device_info_by_index(n)

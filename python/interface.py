@@ -1,9 +1,9 @@
-import Tkinter
 
 
 # Internal imports
 import interface_callbacks
 import strings
+import soundcards
 
 # Global constants
 BACKGROUND_COLOR = "#10547F"
@@ -15,8 +15,107 @@ WINDOW_SIZE = "910x570"
 # Text strings
 WINDOW_TITLE = "Impulse response measuring system - AAU 2015"
 
+# Global variables
+inputAudioInterfaces = []
+outputAudioInterfaces = []
+selectedInputInterface = None
+selectedOutputInterface = None
+
+inputDeviceLabelText = None
+outputDeviceLabelText = None
+
+
+def fillComboWithList(optionStrings, inputCombo, associatedVar, defaultIndex):
+
+    import Tkinter
+
+    # Cleans combo options
+    inputCombo['menu'].delete(0, 'end')
+
+    # Sets default option
+    associatedVar.set(optionStrings[defaultIndex])
+
+    # Fill all options
+    for choice in optionStrings:
+        inputCombo['menu'].add_command(label=choice, command=Tkinter._setit(associatedVar, choice))
+
+
+def loadDeviceLists(inputDeviceCombo, inputDevicesVar, outputDeviceCombo, outputDevicesVar):
+
+    _availableCards = soundcards.getAllSoundCardsInfo()
+
+    _inputCardsNames = []
+    _outputCardsNames = []
+    _defaultInputCard = 0
+    _defaultOutputCard = 0
+    for _currentCard in _availableCards:
+
+        # If it has inputs
+        if _currentCard.countOfInputChannels > 0:
+            inputAudioInterfaces.append(_currentCard)
+            _inputCardsNames.append(_currentCard.interfaceName)
+
+        # If it has outputs
+        if _currentCard.countOfOutputChannels > 0:
+            outputAudioInterfaces.append(_currentCard)
+            _outputCardsNames.append(_currentCard.interfaceName)
+
+        # If it is the default input device
+        if _currentCard.isDefaultInputInterface:
+            global selectedInputInterface
+            selectedInputInterface = _currentCard
+            _defaultInputCard = len(_inputCardsNames)-1
+
+        # If it its the default output device
+        if _currentCard.isDefaultOutputInterface:
+            global selectedOutputInterface
+            selectedOutputInterface = _currentCard
+            _defaultOutputCard = len(_outputCardsNames)-1
+
+    # Loads input devices combo and wires callback
+    fillComboWithList(_inputCardsNames, inputDeviceCombo, inputDevicesVar, _defaultInputCard)
+    inputDevicesVar.trace("w", lambda *args: changedInputDeviceCallBack(inputDevicesVar.get(), *args))
+
+    # Loads output devices combo and wires callback
+    fillComboWithList(_outputCardsNames, outputDeviceCombo, outputDevicesVar, _defaultOutputCard)
+    outputDevicesVar.trace("w", lambda *args: changedOutputDeviceCallBack(outputDevicesVar.get(), *args))
+
+    # Calls callback to update information
+    changedInputDeviceCallBack(inputDevicesVar.get(), None)
+    changedOutputDeviceCallBack(outputDevicesVar.get(), None)
+
+def changedInputDeviceCallBack(newValue, *args):
+    for _card in inputAudioInterfaces:
+        if _card.interfaceName == newValue:
+            global selectedInputInterface
+            selectedInputInterface = _card
+
+    inputDeviceLabelText.set(strings.TEXT_24 + "\n  " + str(selectedInputInterface.samplingRates) + "\n" +
+                             strings.TEXT_25 + "\n  " + str(selectedInputInterface.bitDepths) + "\n" +
+                             strings.TEXT_26 + "\n  " + str(selectedInputInterface.countOfInputChannels) + "\n" +
+                             strings.TEXT_27 + "\n  " + str(selectedInputInterface.countOfOutputChannels) + "\n" +
+                             strings.TEXT_28 + "\n  " + str("%.2f" % (selectedInputInterface.inputLatency[0]*1000))
+                             + " - " + str("%.2f" % (selectedInputInterface.inputLatency[1]*1000)))
+
+
+def changedOutputDeviceCallBack(newValue, *args):
+    for _card in outputAudioInterfaces:
+        if _card.interfaceName == newValue:
+            global selectedOutputInterface
+            selectedOutputInterface = _card
+
+    outputDeviceLabelText.set(strings.TEXT_24 + "\n  " + str(selectedOutputInterface.samplingRates) + "\n" +
+                              strings.TEXT_25 + "\n  " + str(selectedOutputInterface.bitDepths) + "\n" +
+                              strings.TEXT_26 + "\n  " + str(selectedOutputInterface.countOfInputChannels) + "\n" +
+                              strings.TEXT_27 + "\n  " + str(selectedOutputInterface.countOfOutputChannels) + "\n" +
+                              strings.TEXT_29 + "\n  " + str("%.2f" % (selectedOutputInterface.outputLatency[0]*1000))
+                              + " - " + str("%.2f" % (selectedOutputInterface.outputLatency[1]*1000)))
+
 
 def buildInterface():
+
+    import Tkinter
+
     # Root window
     root = Tkinter.Tk()
     root.title(WINDOW_TITLE)
@@ -49,15 +148,15 @@ def buildInterface():
     hdwOutputLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
 
     # Input / output devices combos
-    inputDevicesList = Tkinter.StringVar(hardwareSettingFrame)
-    inputDevicesList.set(strings.TEXT_4)
-    inputDeviceCombo = Tkinter.OptionMenu(hardwareSettingFrame, inputDevicesList, strings.TEXT_4)
+    inputDevicesVar = Tkinter.StringVar(hardwareSettingFrame)
+#    inputDevicesList.set(strings.TEXT_4)
+    inputDeviceCombo = Tkinter.OptionMenu(hardwareSettingFrame, inputDevicesVar, strings.TEXT_4)
     inputDeviceCombo.config(width=24, background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     inputDeviceCombo.place(x=20, y=30)
 
-    outputDevicesList = Tkinter.StringVar(hardwareSettingFrame)
-    outputDevicesList.set(strings.TEXT_4)
-    outputDeviceCombo = Tkinter.OptionMenu(hardwareSettingFrame, outputDevicesList, strings.TEXT_4)
+    outputDevicesVar = Tkinter.StringVar(hardwareSettingFrame)
+#    outputDevicesList.set(strings.TEXT_4)
+    outputDeviceCombo = Tkinter.OptionMenu(hardwareSettingFrame, outputDevicesVar, strings.TEXT_4)
     outputDeviceCombo.config(width=24, background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     outputDeviceCombo.place(x=300, y=30)
 
@@ -75,14 +174,18 @@ def buildInterface():
     testOutputDeviceButton.place(x=510, y=30)
 
     # Input /output devices properties labels
+    global inputDeviceLabelText
+    inputDeviceLabelText = Tkinter.StringVar(hardwareSettingFrame)
     inputDeviceLabel = Tkinter.Label(hardwareSettingFrame,
-                                     text=strings.TEXT_6,
+                                     text="", textvariable=inputDeviceLabelText,
                                      justify=Tkinter.LEFT)
     inputDeviceLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     inputDeviceLabel.place(x=20, y=70)
 
+    global outputDeviceLabelText
+    outputDeviceLabelText = Tkinter.StringVar(hardwareSettingFrame)
     outputDeviceLabel = Tkinter.Label(hardwareSettingFrame,
-                                     text=strings.TEXT_6,
+                                     text="", textvariable=outputDeviceLabelText,
                                      justify=Tkinter.LEFT)
     outputDeviceLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     outputDeviceLabel.place(x=300, y=70)
@@ -174,10 +277,6 @@ def buildInterface():
                                                     bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     measurementSettingsValidateNumbersButton.place(x=150, y=230)
 
-    # Sets default values
-    interface_callbacks.recoverDefaultValuesCallback(userValues_mlsLength, userValues_amplitude,
-                                                     userValues_predelay, userValues_decay)
-
     # -----------------------
     #  Frame 3 - Output data
     # -----------------------
@@ -248,5 +347,16 @@ def buildInterface():
                            bd=1, relief=Tkinter.SUNKEN, anchor=Tkinter.W)
     status.pack(side=Tkinter.BOTTOM, fill=Tkinter.X)
 
-    root.mainloop()
+    # ---------------------------
+    #  Loads data into interface
+    # ---------------------------
 
+    # Sets default values
+    interface_callbacks.recoverDefaultValuesCallback(userValues_mlsLength, userValues_amplitude,
+                                                     userValues_predelay, userValues_decay)
+
+    # Loads combos
+    loadDeviceLists(inputDeviceCombo, inputDevicesVar, outputDeviceCombo, outputDevicesVar)
+
+    # Gives control to window manager
+    root.mainloop()

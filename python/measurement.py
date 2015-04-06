@@ -1,14 +1,9 @@
 """
 Logic layer of the system. Controls the data layer and provides the results to the interface.
 
-executeMeasurement(MLSLength=32768,
-                       inputDeviceSamplFreq=44100,
-                       outputDeviceSamplFreq=44100,
-                       signalAmplitude=0.5,
-                       preDelayForPlayback=0.25,
-                       decayTime=5.0,
-                       inputDevice=-1,
-                       outputDevice=-1)
+    executeMeasurement(measurementSetting)
+
+Measurement settings is an object of type MeasurementSettings.
 
 Joe.
 """
@@ -22,27 +17,63 @@ import computeIR
 import generateMLS
 
 
-def executeMeasurement(MLSLength=32768,
-                       inputDeviceSamplFreq=44100,
-                       outputDeviceSamplFreq=44100,
-                       signalAmplitude=0.5,
-                       preDelayForPlayback=0.25,
-                       decayTime=5.0,
-                       inputDevice=-1,
-                       outputDevice=-1):
+class MeasurementSettings:
+    """
+    Measurement settings definition class. Used to provide information of measurement to be performed.
+
+    Public fields:
+
+    MLSLength: Desired length of MLS signal.
+    inputDeviceSamplFreq: Input device sampling frequency.
+    outputDeviceSamplFreq: Output device sampling frequency.
+    signalAmplitude: Amplitude of MLS signal.
+    preDelayForPlayback: Pre-delay to correct for the latency of sound card.
+    decayTime: Decay time of system-under-test. Should be a bit larger than expected one.
+    inputDevice: Input audio device to use, index from zero. Omit to use default device.
+    outputDevice: Output audio device to use, index from zero. Omit to use default device.
+
+    Joe.
+    """
+
+    # Class constructor
+    def __init__(self):
+        self.data = []
+
+    # Public fields
+    MLSLength = 32768
+    inputDeviceSamplFreq = 44100
+    outputDeviceSamplFreq = 44100
+    signalAmplitude = 0.5
+    preDelayForPlayback = 0.25
+    decayTime = 5.0
+    inputDevice = -1
+    outputDevice = -1
+
+
+class MeasurementResult:
+    """
+    Measurement results definition class. Used to return information of performed measurement.
+
+    Joe.
+    """
+
+    # Class constructor
+    def __init__(self):
+        self.data = []
+
+    # Public fields
+    settings = 0
+    computedImpulseResponse = 0
+
+
+def executeMeasurement(measurementSetting):
     """
     Logic implementation of the system. Controls the data layer and provides the results
     of the measurement.
 
     Joe.
-    :param MLSLength: Desired length of MLS signal.
-    :param inputDeviceSamplFreq: Input device sampling frequency.
-    :param outputDeviceSamplFreq: Output device sampling frequency.
-    :param signalAmplitude: Amplitude of MLS signal.
-    :param preDelayForPlayback: Pre-delay to correct for the latency of sound card.
-    :param decayTime: Decay time of system-under-test. Should be a bit larger than expected one.
-    :param inputDevice: Input audio device to use, index from zero. Omit to use default device.
-    :param outputDevice: Output audio device to use, index from zero. Omit to use default device.
+
+    :param measurementSetting: Settings to be used, object of type MeasurementSettings
     :return: Measured impulse response, corrected with the second channel.
     """
 
@@ -50,22 +81,26 @@ def executeMeasurement(MLSLength=32768,
     _channels = 2
 
     # Generate the MLS signal
-    _MLSSignal = generateMLS.generateMLS(MLSLength, signalAmplitude)
+    _MLSSignal = generateMLS.generateMLS(measurementSetting.MLSLength, measurementSetting.signalAmplitude)
 
     # Padding MLS signal with zeros at the beginning
-    _MLS_WithZeros = [0] * int(round(preDelayForPlayback * outputDeviceSamplFreq) + MLSLength)
+    _MLS_WithZeros = [0] * int(round(measurementSetting.preDelayForPlayback * measurementSetting.outputDeviceSamplFreq)
+                               + measurementSetting.MLSLength)
     _MLS_WithZeros[len(_MLS_WithZeros)-len(_MLSSignal):len(_MLS_WithZeros)] = _MLSSignal
     _MLSSignal = _MLS_WithZeros
 
     # Recording length is function of MLS length and the system decay time
-    _recordingLength = len(_MLSSignal) + int(inputDeviceSamplFreq * decayTime)
+    _recordingLength = len(_MLSSignal) + int(measurementSetting.inputDeviceSamplFreq * measurementSetting.decayTime)
 
     # Player and recorder input arguments in vectors for multitasking
-    _recorderArguments = [_channels, _recordingLength, inputDeviceSamplFreq, 16, inputDevice]
-    _playerArguments = [_MLSSignal, _MLSSignal, outputDeviceSamplFreq, False, outputDevice]
+    _recorderArguments = [_channels, _recordingLength, measurementSetting.inputDeviceSamplFreq,
+                          16, measurementSetting.inputDevice]
+    _playerArguments = [_MLSSignal, _MLSSignal, measurementSetting.outputDeviceSamplFreq,
+                        False, measurementSetting.outputDevice]
 
     # Runs player and recorder simultaneously
-    [_recorderOutputData, _playerOutputData] = parallelfunctions.runInParallel(recorder.rec, _recorderArguments, player.playSignals, _playerArguments)
+    [_recorderOutputData, _playerOutputData] = parallelfunctions.runInParallel(recorder.rec, _recorderArguments,
+                                                                               player.playSignals, _playerArguments)
 
     # Computes IR
     channelL = _recorderOutputData[0][:]
@@ -79,4 +114,9 @@ def executeMeasurement(MLSLength=32768,
     _IRRight = computeIR.computeCircularXCorr(channelR, _paddedMLSSignal)
     _corrected = computeIR.correctSignalWithIR(_IRLeft, _IRRight)
 
-    return _corrected
+    # Creates output object
+    _resultData = MeasurementResult()
+    _resultData.settings = measurementSetting
+    _resultData.computedImpulseResponse = _corrected
+
+    return _resultData

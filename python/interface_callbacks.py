@@ -29,9 +29,37 @@ def recoverDefaultOutputFilename(saveDataToFile_variable):
     saveDataToFile_variable.set(DEFAULT_VALUES_OUTPUT_FILENAME)
 
 
-# TODO: complete this
+def parseInt(stringNumber):
+    try:
+        return abs(int(stringNumber))
+    except ValueError:
+        return "Invalid"
+
+
+def parseFloat(stringNumber):
+    try:
+        return abs(float(stringNumber))
+    except ValueError:
+        return "Invalid"
+
+
 def validateNumbersCallback(userValues_mlsLength, userValues_amplitude, userValues_predelay, userValues_decay):
-    tkMessageBox.showinfo('Debug ...', 'Complete this part validating the numbers in the entries ...')
+    """
+    Checks input strings parsing including accepting only positive numbers (returning absolute value in case of
+    negative inputs).
+
+    Joe.
+    :param userValues_mlsLength:
+    :param userValues_amplitude:
+    :param userValues_predelay:
+    :param userValues_decay:
+    :return:
+    """
+
+    userValues_mlsLength.set(parseInt(userValues_mlsLength.get()))
+    userValues_amplitude.set(parseFloat(userValues_amplitude.get()))
+    userValues_predelay.set(parseInt(userValues_predelay.get()))
+    userValues_decay.set(parseFloat(userValues_decay.get()))
 
 
 # TODO: complete this
@@ -67,3 +95,17 @@ def startMeasurement():
     # - display a plot and / or save data to file
     tkMessageBox.showinfo('Debug ...', 'Complete this part performing the measurement')
 
+    import measurement
+    settings = measurement.MeasurementSettings()
+
+    # settings.MLSLength = 1020
+    # settings.inputDeviceSamplFreq = 44100
+    # settings.outputDeviceSamplFreq = 44100
+    # settings.signalAmplitude = 0.5
+    # settings.preDelayForPlayback = 0.0
+    # settings.decayTime = 0.0
+    # settings.inputDevice = 1
+    # settings.outputDevice = 1
+
+    data = measurement.executeMeasurement(settings)
+    print "done measuring!"

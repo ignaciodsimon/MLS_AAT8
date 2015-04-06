@@ -122,6 +122,7 @@ def playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False, de
     :param deviceIndex: Output audio device to use. Omit for default device.
     :return:
     """
+
     # Creates audio player
     _audioPlayer = pyaudio.PyAudio()
 
