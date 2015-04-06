@@ -72,6 +72,33 @@ def convertStreamToChannels(stereoStream):
 
     return [_channelL, _channelR]
 
+def convertChannelToStream(inputChannel, normalize=False):
+    """
+    Converts one 16-bit audio signal to a wav-type stream (8-bit two-complement samples).
+
+    Joe.
+    :param inputChannel: Input audio signal (signed 16-bit float)
+    :param normalize: Should normalize input signal to fill the dynamic range up to -3 dBFS
+    :return: Wav-type stream
+    """
+
+    # Calculates normalization value to -3dBFS
+    if normalize:
+        _normalizationValue = max(inputChannel) * pow(10.0, 3/20.0)
+    else:
+        _normalizationValue = 1
+
+    _outputStream = ''
+    for n in range(len(inputChannel)):
+
+        # Adapts input signals (signed float) to 16-bit signed integer range
+        _currentLSample = int(inputChannel[n] * float(pow(2, 16))/2 / _normalizationValue)
+
+        _samples = intToTwosComplement(_currentLSample)
+        _outputStream = _outputStream + chr(_samples[1]) + chr(_samples[0])
+
+    return _outputStream
+
 
 def convertChannelsToStream(channelL, channelR, normalize=False):
     """
@@ -81,13 +108,13 @@ def convertChannelsToStream(channelL, channelR, normalize=False):
     Joe.
     :param channelL: Left audio signal (signed 16-bit float)
     :param channelR: Left audio signal (signed 16-bit float)
-    :param normalize: Should normalize input signals to fill the dynamic range
+    :param normalize: Should normalize input signals to fill the dynamic range up to -3 dBFS
     :return: Wav-type interleaved stream
     """
 
     # Calculates normalization value
     if normalize:
-        _normalizationValue = max(max(channelL), max(channelR))
+        _normalizationValue = max(max(channelL), max(channelR)) * pow(10.0, 3/20.0)
     else:
         _normalizationValue = 1.0
 

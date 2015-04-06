@@ -1,5 +1,3 @@
-
-
 # Internal imports
 import interface_callbacks
 import strings
@@ -172,7 +170,8 @@ def buildInterface():
 
     testOutputDeviceButton = Tkinter.Button(hardwareSettingFrame,
                                             text=strings.TEXT_5, width=2,
-                                            command=lambda: interface_callbacks.testOutputDeviceCallback())
+                                            command=lambda: interface_callbacks.
+                                            testOutputDeviceCallback(selectedOutputInterface, userValues_amplitude))
     testOutputDeviceButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     testOutputDeviceButton.place(x=510, y=30)
 
@@ -238,25 +237,29 @@ def buildInterface():
     userValues_mlsLength = Tkinter.StringVar()
     mlsLengthInputEntry = Tkinter.Entry(measurementSettingFrame, width=8,
                                         textvariable=userValues_mlsLength, justify=Tkinter.RIGHT)
-    mlsLengthInputEntry.config(highlightbackground=BACKGROUND_COLOR, background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    mlsLengthInputEntry.config(highlightbackground=BACKGROUND_COLOR,
+                               background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     mlsLengthInputEntry.place(x=200, y=40)
 
     userValues_amplitude = Tkinter.StringVar()
     amplitudeInputEntry = Tkinter.Entry(measurementSettingFrame, width=8,
                                         textvariable=userValues_amplitude, justify=Tkinter.RIGHT)
-    amplitudeInputEntry.config(highlightbackground=BACKGROUND_COLOR, background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    amplitudeInputEntry.config(highlightbackground=BACKGROUND_COLOR,
+                               background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     amplitudeInputEntry.place(x=200, y=70)
 
     userValues_predelay = Tkinter.StringVar()
     predelayInputEntry = Tkinter.Entry(measurementSettingFrame, width=8,
                                        textvariable=userValues_predelay, justify=Tkinter.RIGHT)
-    predelayInputEntry.config(highlightbackground=BACKGROUND_COLOR, background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    predelayInputEntry.config(highlightbackground=BACKGROUND_COLOR,
+                              background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     predelayInputEntry.place(x=200, y=100)
 
     userValues_decay = Tkinter.StringVar()
     decayInputEntry = Tkinter.Entry(measurementSettingFrame, width=8,
                                     textvariable=userValues_decay, justify=Tkinter.RIGHT)
-    decayInputEntry.config(highlightbackground=BACKGROUND_COLOR, background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    decayInputEntry.config(highlightbackground=BACKGROUND_COLOR,
+                           background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     decayInputEntry.place(x=200, y=180)
 
     measurementSettingsRecoverDefaultValuesButton = Tkinter.Button(measurementSettingFrame, text=strings.TEXT_14,
@@ -305,7 +308,8 @@ def buildInterface():
     saveDataToFile_variable = Tkinter.StringVar()
     interface_callbacks.recoverDefaultOutputFilename(saveDataToFile_variable)
     saveDataToFileEntry = Tkinter.Entry(outputDataFrame, textvariable=saveDataToFile_variable, width=40)
-    saveDataToFileEntry.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR, highlightbackground=BACKGROUND_COLOR)
+    saveDataToFileEntry.config(background=BACKGROUND_COLOR,
+                               foreground=FOREGROUND_COLOR, highlightbackground=BACKGROUND_COLOR)
     saveDataToFileEntry.place(x=35, y=40)
 
     saveDataToFileButton = Tkinter.Button(outputDataFrame,
@@ -338,7 +342,11 @@ def buildInterface():
     executeMeasurementFrame.configure(font=('', 0, 'bold'), background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
 
     executeMeasurementButton = Tkinter.Button(executeMeasurementFrame, text=strings.TEXT_21,
-                                              command=lambda: interface_callbacks.startMeasurement(root))
+                                              command=lambda: interface_callbacks.
+                                              startMeasurement(root,
+                                                               bool(plotOutputDataCheck.get()),
+                                                               bool(saveDataToFileCheck.get()),
+                                                               saveDataToFile_variable.get()))
     executeMeasurementButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     executeMeasurementButton.place(x=40, y=20)
 
@@ -368,16 +376,16 @@ def buildInterface():
         measurementSettings = measurement.MeasurementSettings()
 
         measurementSettings.MLSLength = int(userValues_mlsLength.get())
-        measurementSettings.inputDeviceSamplFreq = selectedInputInterface.samplingRates[0]
-        measurementSettings.outputDeviceSamplFreq = selectedOutputInterface.samplingRates[0]
+        measurementSettings.inputDeviceSamplFreq = int(selectedInputInterface.samplingRates[0])
+        measurementSettings.outputDeviceSamplFreq = int(selectedOutputInterface.samplingRates[0])
         measurementSettings.signalAmplitude = float(userValues_amplitude.get())
         measurementSettings.preDelayForPlayback = float(userValues_predelay.get()) / 1000.0
         measurementSettings.decayTime = float(userValues_decay.get())
         measurementSettings.inputDevice = selectedInputInterface.interfaceID
         measurementSettings.outputDevice = selectedOutputInterface.interfaceID
 
-        measurementSettings.shouldPlot = plotOutputDataCheck.get()
-        measurementSettings.shouldSaveToFile = saveDataToFileCheck.get()
+        measurementSettings.shouldPlot = bool(plotOutputDataCheck.get())
+        measurementSettings.shouldSaveToFile = bool(saveDataToFileCheck.get())
         measurementSettings.shouldSaveToFileFilename = saveDataToFile_variable.get()
 
         return measurementSettings
