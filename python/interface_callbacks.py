@@ -1,6 +1,3 @@
-import tkMessageBox
-import tkFileDialog
-
 
 # Constants
 DEFAULT_VALUES_MLS_LENGTH = 32768
@@ -64,17 +61,20 @@ def validateNumbersCallback(userValues_mlsLength, userValues_amplitude, userValu
 
 # TODO: complete this
 def testInputDeviceCallback():
+    import tkMessageBox
     tkMessageBox.showinfo('Debug ...', 'Complete this part with an input level test ...')
 
 
 # TODO: complete this
 def testOutputDeviceCallback():
+    import tkMessageBox
     tkMessageBox.showinfo('Debug ...', 'Complete this part with an output signal test ...')
 
 
 # TODO: complete this
 def saveDataToFileCallback(saveDataToFile_variable):
 
+    import tkFileDialog
     _filename = tkFileDialog.asksaveasfilename(defaultextension=".txt")
 
     if _filename != "":
@@ -87,25 +87,15 @@ def saveDataToFileCallback(saveDataToFile_variable):
 
 # TODO: complete this
 # TODO: change symbol to receive data from interface (parameters and selected audio i/o)
-def startMeasurement():
+def startMeasurement(mainWindow):
     # Must:
     # - verify parameters
-    # - show a "please wait" dialog
+    # - show "please wait" dialog
     # - call measurement and wait for return data
     # - display a plot and / or save data to file
-    tkMessageBox.showinfo('Debug ...', 'Complete this part performing the measurement')
 
-    import measurement
-    settings = measurement.MeasurementSettings()
+    import interface
 
-    # settings.MLSLength = 1020
-    # settings.inputDeviceSamplFreq = 44100
-    # settings.outputDeviceSamplFreq = 44100
-    # settings.signalAmplitude = 0.5
-    # settings.preDelayForPlayback = 0.0
-    # settings.decayTime = 0.0
-    # settings.inputDevice = 1
-    # settings.outputDevice = 1
-
-    data = measurement.executeMeasurement(settings)
-    print "done measuring!"
+    # TODO: this is really dirty, should find another way of doing it
+    interface.returnedValue = True
+    mainWindow.destroy()

@@ -4,6 +4,8 @@
 import interface_callbacks
 import strings
 import soundcards
+import measurement
+
 
 # Global constants
 BACKGROUND_COLOR = "#10547F"
@@ -24,6 +26,7 @@ selectedOutputInterface = None
 inputDeviceLabelText = None
 outputDeviceLabelText = None
 
+returnedValue = False
 
 def fillComboWithList(optionStrings, inputCombo, associatedVar, defaultIndex):
 
@@ -335,7 +338,7 @@ def buildInterface():
     executeMeasurementFrame.configure(font=('', 0, 'bold'), background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
 
     executeMeasurementButton = Tkinter.Button(executeMeasurementFrame, text=strings.TEXT_21,
-                                              command=lambda: interface_callbacks.startMeasurement())
+                                              command=lambda: interface_callbacks.startMeasurement(root))
     executeMeasurementButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     executeMeasurementButton.place(x=40, y=20)
 
@@ -360,3 +363,23 @@ def buildInterface():
 
     # Gives control to window manager
     root.mainloop()
+
+    if returnedValue == True:
+        measurementSettings = measurement.MeasurementSettings()
+
+        measurementSettings.MLSLength = int(userValues_mlsLength.get())
+        measurementSettings.inputDeviceSamplFreq = selectedInputInterface.samplingRates[0]
+        measurementSettings.outputDeviceSamplFreq = selectedOutputInterface.samplingRates[0]
+        measurementSettings.signalAmplitude = float(userValues_amplitude.get())
+        measurementSettings.preDelayForPlayback = float(userValues_predelay.get()) / 1000.0
+        measurementSettings.decayTime = float(userValues_decay.get())
+        measurementSettings.inputDevice = selectedInputInterface.interfaceID
+        measurementSettings.outputDevice = selectedOutputInterface.interfaceID
+
+        measurementSettings.shouldPlot = plotOutputDataCheck.get()
+        measurementSettings.shouldSaveToFile = saveDataToFileCheck.get()
+        measurementSettings.shouldSaveToFileFilename = saveDataToFile_variable.get()
+
+        return measurementSettings
+    else:
+        return False

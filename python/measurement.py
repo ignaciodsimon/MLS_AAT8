@@ -49,6 +49,10 @@ class MeasurementSettings:
     inputDevice = -1
     outputDevice = -1
 
+    shouldPlot = False
+    shouldSaveToFile = False
+    shouldSaveToFileFilename = ""
+
 
 class MeasurementResult:
     """

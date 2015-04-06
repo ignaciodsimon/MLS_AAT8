@@ -5,42 +5,40 @@ Application entry point.
 
 import interface
 import measurement
+import multiprocessing as mp
 import matplotlib.pyplot as plot
 
-# Builds interface and gives control to window manager
-interface.buildInterface()
+# Runs the interface in another process to "fix" the bug between Tkinter and audio core libraries
+_pool = mp.Pool()
+_result1 = _pool.apply_async(interface.buildInterface)
+_returnedValue = _result1.get()
+_pool.close()
+_pool.join()
 
-# import numpy
-# # Generates the signals
-# signal1 = [1.0 * numpy.sin(2 * numpy.pi * 1000 * n/44100) for n in range(44100)]
-# signal2 = [1.0 * numpy.sin(2 * numpy.pi * 2000 * n/44100) for n in range(44100)]
-#
-# # Sends them to the sound card
-# import player
-# player.playSignals(signal1, signal2, samplingFreq=44100, normalize=False)
+# Checks if window was closed or if the "start" button was clicked
+if isinstance(_returnedValue, measurement.MeasurementSettings):
 
+    print _returnedValue.MLSLength
+    print _returnedValue.inputDeviceSamplFreq
+    print _returnedValue.outputDeviceSamplFreq
+    print _returnedValue.signalAmplitude
+    print _returnedValue.preDelayForPlayback
+    print _returnedValue.decayTime
+    print _returnedValue.inputDevice
+    print _returnedValue.outputDevice
 
-# settings = measurement.MeasurementSettings()
+    print _returnedValue.shouldPlot
+    print _returnedValue.shouldSaveToFile
+    print _returnedValue.shouldSaveToFileFilename
 
-# settings.MLSLength = 1020
-# settings.inputDeviceSamplFreq = 44100
-# settings.outputDeviceSamplFreq = 44100
-# settings.signalAmplitude = 0.5
-# settings.preDelayForPlayback = 0.0
-# settings.decayTime = 0.0
-# settings.inputDevice = 1
-# settings.outputDevice = 1
+    settings = measurement.MeasurementSettings()
+    measurementResult = measurement.executeMeasurement(settings)
 
-# data = measurement.executeMeasurement(settings)
-# print "done measuring!"
-# plot.plot(data.computedImpulseResponse)
-# plot.show()
-#
-# print settings.MLSLength
-# print settings.inputDeviceSamplFreq
-# print settings.outputDeviceSamplFreq
-# print settings.signalAmplitude
-# print settings.preDelayForPlayback
-# print settings.decayTime
-# print settings.inputDevice
-# print settings.outputDevice
+    if _returnedValue.shouldSaveToFile:
+        # TODO: complete this part
+        print "Save results to file here"
+
+    if _returnedValue.shouldPlot:
+        # TODO: make the plot a bit more beautiful ...
+        plot.plot(measurementResult.computedImpulseResponse)
+        plot.show()

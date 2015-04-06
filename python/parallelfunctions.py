@@ -26,18 +26,18 @@ def runInParallel(function1, f1args, function2, f2args):
     # Creates the pool to run tasks in parallel
     _pool = mp.Pool()
 
-    # Evaluates "function2(f2arg1, f2arg2, f2arg3, f2arg4)" asynchronously
-    _result2 = _pool.apply_async(function2, f2args)
-
     # Evaluates "function1(f1arg1, f1arg2, f1arg3, f1arg4)" asynchronously
     _result1 = _pool.apply_async(function1, f1args)
+
+    # Evaluates "function2(f2arg1, f2arg2, f2arg3, f2arg4)" asynchronously
+    _result2 = _pool.apply_async(function2, f2args)
 
     # Gets the returned data (if any)
     _retValue1 = _result1.get()
     _retValue2 = _result2.get()
 
-    # _pool.close()
-    # _pool.join()
+    _pool.close()
+    _pool.join()
 
     return [_retValue1, _retValue2]
 
