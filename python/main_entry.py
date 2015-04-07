@@ -8,9 +8,15 @@ import measurement
 import multiprocessing as mp
 import write_wav
 import plotting
+import strings
+
 
 if __name__ == "__main__":
 
+    # Shows version and basic software information.
+    print strings.TEXT_0 + "\n" + strings.TEXT_23 + "\n" + strings.TEXT_42 + "\n"
+
+    # Included to support the multiprocessing on Windows machines
     mp.freeze_support()
 
     # Runs the interface in another process to "fix" the bug between Tkinter and audio core libraries
@@ -23,21 +29,22 @@ if __name__ == "__main__":
     # Checks if window was closed or if the "start" button was clicked
     if isinstance(_returnedValue, measurement.MeasurementSettings):
 
-        print "Executing measurement ..."
+        print strings.TEXT_36
         measurementResult = measurement.executeMeasurement(_returnedValue)
-        print "Measurement done."
+        print strings.TEXT_37
 
         if _returnedValue.shouldSaveToFile:
-            print "Saving impulse response to Wav file ..."
-            write_wav.saveImpulseResponseToWav(measurementResult.computedImpulseResponse,
-                                     measurementResult.settings.inputDeviceSamplFreq,
-                                     measurementResult.settings.shouldSaveToFileFilename,
-                                     measurementResult.settings.normalizeOutput)
-            print "Saving done."
+            print strings.TEXT_38
+            write_wav.saveImpulseResponseToWav(measurementResult)
+
+            # write_wav.saveImpulseResponseToWav(measurementResult.computedImpulseResponse,
+            #                                    measurementResult.settings.inputDeviceSamplFreq,
+            #                                    measurementResult.settings.shouldSaveToFileFilename,
+            #                                    measurementResult.settings.normalizeOutput)
+            print strings.TEXT_39
 
         if _returnedValue.shouldPlot:
-            # TODO: make the plot a bit more beautiful ...
-            print "Plotting results ..."
+            print strings.TEXT_40
             plotting.plotResults(measurementResult)
 
-        print "All done."
+        print strings.TEXT_41

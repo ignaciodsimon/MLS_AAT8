@@ -1,9 +1,14 @@
 """
 Logic layer of the system. Controls the data layer and provides the results to the interface.
 
+Function: (measurement settings is an object of type MeasurementSettings)
+
     executeMeasurement(measurementSetting)
 
-Measurement settings is an object of type MeasurementSettings.
+Also holds two public classes:
+
+    class MeasurementSettings
+    class MeasurementResult
 
 Joe.
 """

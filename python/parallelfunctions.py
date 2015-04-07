@@ -1,3 +1,12 @@
+"""
+Code to execute two functions simultaneously. Used for recording while playing back another signal.
+
+Function:
+    runInParallel(function1, f1args, function2, f2args)
+
+"""
+
+
 import multiprocessing as mp
 
 

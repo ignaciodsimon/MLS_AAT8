@@ -1,9 +1,11 @@
 """
 Functions to send audio data to sound card.
 
-Example of use:
-    playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False)
+Function:
+    playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False, deviceIndex=-1)
 
+Auxiliary function:
+    convertChannelToStream(inputChannel, normalize=False)
 
 Joe.
 """
@@ -11,7 +13,7 @@ Joe.
 import pyaudio
 
 
-def twosComplementToInt(msb, lsb):
+def _twosComplementToInt(msb, lsb):
     """
     Converts a number in two 8-bit (two-complement) to a signed 16-bit integer.
 
@@ -31,7 +33,7 @@ def twosComplementToInt(msb, lsb):
     return _number
 
 
-def intToTwosComplement(inputNumber):
+def _intToTwosComplement(inputNumber):
     """
     Converts a signed 16-bit number to two 8-bit registers in two-complement.
 
@@ -49,7 +51,7 @@ def intToTwosComplement(inputNumber):
     return [_msb, _lsb]
 
 
-def convertStreamToChannels(stereoStream):
+def _convertStreamToChannels(stereoStream):
     """
     Converts a two channel stream in 8-bit 2-complement format to two vectors
     of 16-bit numbers. This type of 8-bit stream is used when recording / playing
@@ -65,8 +67,8 @@ def convertStreamToChannels(stereoStream):
     _sampIndex = 0
     for n in range(0, len(stereoStream)-4, 4):
 
-        _channelL[_sampIndex] = twosComplementToInt(ord(stereoStream[n+1]), ord(stereoStream[n]))
-        _channelR[_sampIndex] = twosComplementToInt(ord(stereoStream[n+3]), ord(stereoStream[n+2]))
+        _channelL[_sampIndex] = _twosComplementToInt(ord(stereoStream[n+1]), ord(stereoStream[n]))
+        _channelR[_sampIndex] = _twosComplementToInt(ord(stereoStream[n+3]), ord(stereoStream[n+2]))
 
         _sampIndex += 1
 
@@ -94,13 +96,13 @@ def convertChannelToStream(inputChannel, normalize=False):
         # Adapts input signals (signed float) to 16-bit signed integer range
         _currentLSample = int(inputChannel[n] * float(pow(2, 16))/2 / _normalizationValue)
 
-        _samples = intToTwosComplement(_currentLSample)
+        _samples = _intToTwosComplement(_currentLSample)
         _outputStream = _outputStream + chr(_samples[1]) + chr(_samples[0])
 
     return _outputStream
 
 
-def convertChannelsToStream(channelL, channelR, normalize=False):
+def _convertChannelsToStream(channelL, channelR, normalize=False):
     """
     Converts two 16-bit audio signals to a wav-type stream (8-bit two-complement interleaved
     samples).
@@ -125,8 +127,8 @@ def convertChannelsToStream(channelL, channelR, normalize=False):
         _currentLSample = int(channelL[n] * float(pow(2, 16))/2 / _normalizationValue)
         _currentRSample = int(channelR[n] * float(pow(2, 16))/2 / _normalizationValue)
 
-        _samplesL = intToTwosComplement(_currentLSample)
-        _samplesR = intToTwosComplement(_currentRSample)
+        _samplesL = _intToTwosComplement(_currentLSample)
+        _samplesR = _intToTwosComplement(_currentRSample)
 
         _outputStream = _outputStream + chr(_samplesL[1]) + chr(_samplesL[0])
         _outputStream = _outputStream + chr(_samplesR[1]) + chr(_samplesR[0])
@@ -168,7 +170,7 @@ def playSignals(signalLeft, signalRight, samplingFreq=44100, normalize=False, de
                         output=True)
 
     # Converts input signals to Wav stream
-    signalStream = convertChannelsToStream(signalLeft, signalRight, normalize)
+    signalStream = _convertChannelsToStream(signalLeft, signalRight, normalize)
 
     # Sends stream to audio player
     _stream.write(signalStream)

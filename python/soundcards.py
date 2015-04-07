@@ -1,6 +1,7 @@
 """
 Functions to obtain information of all available audio devices.
-Returned data is a vector of objects of type SoundCard.
+
+Function: (returned data is a vector of objects of type SoundCard)
 
     SoundCard[] = getAllSoundCardsInfo()
 

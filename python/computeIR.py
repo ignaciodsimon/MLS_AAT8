@@ -2,7 +2,7 @@
 Functions for estimating impulse response from recorded signal and for correcting a signal with
 a known impulse response.
 
-Example:
+Functions:
     computeCircularXCorr(signalA, signalB)
     correctSignalWithIR(inputSignal, impulseResponse)
 
@@ -44,7 +44,7 @@ def correctSignalWithIR(inputSignal, impulseResponse):
     return numpy.real(numpy.fft.ifft(_outputSpectrum))
 
 
-def computeRMSValue(inputSignal):
+def _computeRMSValue(inputSignal):
     """
     Computes the Root Mean Square value of a given signal.
 
@@ -70,12 +70,12 @@ def computeCircularXCorr(signalA, signalB):
 
     # Normalizes smaller signal to the (bigger) other one, to avoid excessive numeric errors
     # If signal A has more power
-    if computeRMSValue(signalA) > computeRMSValue(signalB):
+    if _computeRMSValue(signalA) > _computeRMSValue(signalB):
         # Then normalize signal B
-        signalB = list(numpy.multiply(signalB, float(computeRMSValue(signalA) / computeRMSValue(signalB))))
+        signalB = list(numpy.multiply(signalB, float(_computeRMSValue(signalA) / _computeRMSValue(signalB))))
     else:
         # Otherwise normalize signal A
-        signalA = list(numpy.multiply(signalA, float(computeRMSValue(signalB) / computeRMSValue(signalA))))
+        signalA = list(numpy.multiply(signalA, float(_computeRMSValue(signalB) / _computeRMSValue(signalA))))
 
     # Computes circular cross-correlation using the FFT
     _circularXCorr = numpy.fft.ifft(numpy.fft.fft(signalA) * numpy.fft.fft(signalB).conj()).real

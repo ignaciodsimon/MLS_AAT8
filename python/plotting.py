@@ -1,3 +1,12 @@
+"""
+Function for plotting measured impulse response. Opens plot in a new window.
+
+Function:
+    plotResults(measurementResult)
+
+"""
+
+
 import matplotlib.pyplot as plot
 import strings
 

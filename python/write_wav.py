@@ -1,23 +1,30 @@
+"""
+Saves measured impulse response to a mono wav file.
+
+Function:
+    saveImpulseResponseToWav(measurementResult)
+
+"""
+
+
 import player
 import wave
 
 
-def saveImpulseResponseToWav(impulseResponse, samplingFreq, outputWavFilename, normalize=False):
+def saveImpulseResponseToWav(measurementResult):
     """
     Saves received data to Wav file.
 
     Joe.
-    :param impulseRespone: Computed impulse response vector.
-    :param samplingFreq: Sampling frequency used (to save in Wav file).
-    :param outputWavFilename: Filename (with path) to save file in.
-    :param normalize: Should normalize to -3 dBFS.
+    :param measurementResult: Object of type MeasurementResult containing settings and results.
     """
 
-    _stream = player.convertChannelToStream(impulseResponse, normalize)
+    _stream = player.convertChannelToStream(measurementResult.computedImpulseResponse,
+                                            measurementResult.settings.normalizeOutput)
 
-    wf = wave.open(outputWavFilename, 'w')
+    wf = wave.open(measurementResult.settings.shouldSaveToFileFilename, 'w')
     wf.setnchannels(1)
     wf.setsampwidth(2)
-    wf.setframerate(samplingFreq)
+    wf.setframerate(measurementResult.settings.inputDeviceSamplFreq)
     wf.writeframes(_stream)
     wf.close()

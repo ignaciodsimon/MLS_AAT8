@@ -2,6 +2,7 @@
 Language strings.
 """
 
+TEXT_0 = "Impulse Response measuring system - Version 0.1"
 
 TEXT_1 = "  1 - Hardware settings  "
 TEXT_2 = "Input device:"
@@ -41,3 +42,12 @@ TEXT_32 = "Select at least one action, saving or plotting."
 TEXT_33 = "Samples"
 TEXT_34 = "Amplitude"
 TEXT_35 = "Computed impulse response"
+
+TEXT_36 = "Executing measurement ..."
+TEXT_37 = "Measurement done."
+TEXT_38 = "Saving impulse response to Wav file ..."
+TEXT_39 = "Saving done."
+TEXT_40 = "Plotting results ..."
+TEXT_41 = "All done."
+
+TEXT_42 = "https://github.com/jdomin14/MLS_AAT8"

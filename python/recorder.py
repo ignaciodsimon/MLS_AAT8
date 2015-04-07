@@ -1,3 +1,12 @@
+"""
+Code for recording signal(s) from an input sound device.
+
+Function:
+    rec(numOfChannels, recordingLength, samplFreq, bitDepth, deviceIndex=-1)
+
+"""
+
+
 import pyaudio
 import numpy
 import player
@@ -48,6 +57,6 @@ def rec(numOfChannels, recordingLength, samplFreq, bitDepth, deviceIndex=-1):
     _recordedFrames = _recordingStream.read(_realRecordingLength)
 
     # Converts recorded frames to 16-bit signed samples
-    _outputSamples = player.convertStreamToChannels(_recordedFrames)
+    _outputSamples = player._convertStreamToChannels(_recordedFrames)
 
     return _outputSamples[0:recordingLength]
