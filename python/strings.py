@@ -37,3 +37,7 @@ TEXT_29 = "Output latency [ms]:"
 TEXT_30 = "ERROR!"
 TEXT_31 = "Please, select where to save the IR to ..."
 TEXT_32 = "Select at least one action, saving or plotting."
+
+TEXT_33 = "Samples"
+TEXT_34 = "Amplitude"
+TEXT_35 = "Computed impulse response"
