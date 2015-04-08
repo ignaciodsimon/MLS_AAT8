@@ -20,6 +20,7 @@ import parallelfunctions
 import player
 import computeIR
 import generateMLS
+import numpy
 
 
 class MeasurementSettings:
@@ -58,6 +59,8 @@ class MeasurementSettings:
     shouldPlot = False
     shouldSaveToFile = False
     shouldSaveToFileFilename = ""
+
+    numberOfAverages = 3
 
 
 class MeasurementResult:
@@ -102,26 +105,38 @@ def executeMeasurement(measurementSetting):
     # Recording length is function of MLS length and the system decay time
     _recordingLength = len(_MLSSignal) + int(measurementSetting.inputDeviceSamplFreq * measurementSetting.decayTime)
 
+    # Normalizing the recording length to an integer number of frames
+    _recordingLength = int(1024 * numpy.ceil(float(_recordingLength) / float(1024)))
+
     # Player and recorder input arguments in vectors for multitasking
     _recorderArguments = [_channels, _recordingLength, measurementSetting.inputDeviceSamplFreq,
                           16, measurementSetting.inputDevice]
     _playerArguments = [_MLSSignal, _MLSSignal, measurementSetting.outputDeviceSamplFreq,
                         False, measurementSetting.outputDevice]
 
-    # Runs player and recorder simultaneously
-    [_recorderOutputData, _playerOutputData] = parallelfunctions.runInParallel(recorder.rec, _recorderArguments,
-                                                                               player.playSignals, _playerArguments)
 
-    # Computes IR
-    channelL = _recorderOutputData[0][:]
-    channelR = _recorderOutputData[1][:]
+    _averagedLeft = [0] * _recordingLength
+    _averagedRight = [0] * _recordingLength
+    for _i in range(measurementSetting.numberOfAverages):
+
+        # Runs player and recorder simultaneously
+        [_recorderOutputData, _playerOutputData] = parallelfunctions.runInParallel(recorder.rec,
+                                                                                   _recorderArguments,
+                                                                                   player.playSignals,
+                                                                                   _playerArguments)
+
+        _averagedLeft = numpy.add(_averagedLeft, _recorderOutputData[0][:])
+        _averagedRight = numpy.add(_averagedRight, _recorderOutputData[1][:])
+
+    _channelL = numpy.divide(_averagedLeft, measurementSetting.numberOfAverages)
+    _channelR = numpy.divide(_averagedRight, measurementSetting.numberOfAverages)
 
     # Padding with zeros of MLS signal
-    _paddedMLSSignal = [0]*(len(channelL))
+    _paddedMLSSignal = [0]*(len(_channelL))
     _paddedMLSSignal[0:len(_MLSSignal)] = _MLSSignal
 
-    _IRLeft = computeIR.computeCircularXCorr(channelL, _paddedMLSSignal)
-    _IRRight = computeIR.computeCircularXCorr(channelR, _paddedMLSSignal)
+    _IRLeft = computeIR.computeCircularXCorr(_channelL, _paddedMLSSignal)
+    _IRRight = computeIR.computeCircularXCorr(_channelR, _paddedMLSSignal)
     _corrected = computeIR.correctSignalWithIR(_IRLeft, _IRRight)
 
     # Creates output object
