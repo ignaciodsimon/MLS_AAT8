@@ -60,7 +60,7 @@ class MeasurementSettings:
     shouldSaveToFile = False
     shouldSaveToFileFilename = ""
 
-    numberOfAverages = 3
+    numberOfAverages = 1
 
 
 class MeasurementResult:
@@ -114,7 +114,6 @@ def executeMeasurement(measurementSetting):
     _playerArguments = [_MLSSignal, _MLSSignal, measurementSetting.outputDeviceSamplFreq,
                         False, measurementSetting.outputDevice]
 
-
     _averagedLeft = [0] * _recordingLength
     _averagedRight = [0] * _recordingLength
     for _i in range(measurementSetting.numberOfAverages):
@@ -131,7 +130,7 @@ def executeMeasurement(measurementSetting):
     _channelL = numpy.divide(_averagedLeft, measurementSetting.numberOfAverages)
     _channelR = numpy.divide(_averagedRight, measurementSetting.numberOfAverages)
 
-    # Padding with zeros of MLS signal
+    # Padding with zeros at the end of MLS signal
     _paddedMLSSignal = [0]*(len(_channelL))
     _paddedMLSSignal[0:len(_MLSSignal)] = _MLSSignal
 
