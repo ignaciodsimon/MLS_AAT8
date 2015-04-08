@@ -29,22 +29,19 @@ if __name__ == "__main__":
     # Checks if window was closed or if the "start" button was clicked
     if isinstance(_returnedValue, measurement.MeasurementSettings):
 
+        # Executes the measurement(s)
         print strings.TEXT_36
         measurementResult = measurement.executeMeasurement(_returnedValue)
         print strings.TEXT_37
 
+        # Saves the output if necessary
         if _returnedValue.shouldSaveToFile:
             print strings.TEXT_38
             write_wav.saveImpulseResponseToWav(measurementResult)
-
-            # write_wav.saveImpulseResponseToWav(measurementResult.computedImpulseResponse,
-            #                                    measurementResult.settings.inputDeviceSamplFreq,
-            #                                    measurementResult.settings.shouldSaveToFileFilename,
-            #                                    measurementResult.settings.normalizeOutput)
             print strings.TEXT_39
 
+        # Plots the output if necessary
         if _returnedValue.shouldPlot:
             print strings.TEXT_40
             plotting.plotResults(measurementResult)
-
-        print strings.TEXT_41
+            print strings.TEXT_41
