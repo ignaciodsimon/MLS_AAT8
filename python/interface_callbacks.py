@@ -95,8 +95,7 @@ def testInputDeviceCallback():
 
 def testOutputDeviceCallback(deviceToUse, userValues_amplitude):
     """
-    Produces a 1 kHz tone on the left output and a 2 kHz tone on the right output of the selected device with
-    the given amplitude.
+    Sends an MLS signal to the output of the selected device with the given amplitude.
 
     :param deviceToUse: Output device to use, type SoundCard.
     :param userValues_amplitude: Amplitude of sinus signals, from 0.0 to 1.0.
