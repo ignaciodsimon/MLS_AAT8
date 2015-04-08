@@ -25,7 +25,7 @@ TEXT_18 = "..."
 TEXT_19 = "Plot measured impulse response."
 TEXT_20 = "  4 - Execute measurement  "
 TEXT_21 = "START"
-TEXT_22 = "Status: Idle."
+TEXT_22 = "Amount of averages:"
 TEXT_23 = "MSc. Acoustics and Audio Technology, 2015 - Aalborg University"
 
 TEXT_24 = "Sampling rates [Hz]:"
