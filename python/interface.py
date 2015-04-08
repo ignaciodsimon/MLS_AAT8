@@ -336,15 +336,26 @@ def buildInterface():
                                                                bool(_saveDataToFileCheck.get()),
                                                                _saveDataToFile_variable.get()))
     _executeMeasurementButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
-    _executeMeasurementButton.place(x=40, y=20)
+    _executeMeasurementButton.place(x=350, y=80)
 
     _executeMeasurementLabel = Tkinter.Label(_executeMeasurementFrame, text=strings.TEXT_22)
     _executeMeasurementLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
-    _executeMeasurementLabel.place(x=40, y=60)
+    _executeMeasurementLabel.place(x=20, y=10)
 
     _status = Tkinter.Label(_root, text=strings.TEXT_23,
                            bd=1, relief=Tkinter.SUNKEN, anchor=Tkinter.W)
     _status.pack(side=Tkinter.BOTTOM, fill=Tkinter.X)
+
+    _averagesEntry_Variable = Tkinter.StringVar()
+    _averagesEntry_Variable.set("1")
+    _averagesEntry = Tkinter.Entry(_executeMeasurementFrame, textvariable=_averagesEntry_Variable, width=10)
+    _averagesEntry.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR,
+                          highlightbackground=BACKGROUND_COLOR,  justify=Tkinter.RIGHT)
+    _averagesEntry.place(x=170, y=10)
+
+
+
+
 
     # ---------------------------
     #  Loads data into interface
@@ -375,6 +386,7 @@ def buildInterface():
         _measurementSettings.shouldPlot = bool(_plotOutputDataCheck.get())
         _measurementSettings.shouldSaveToFile = bool(_saveDataToFileCheck.get())
         _measurementSettings.shouldSaveToFileFilename = _saveDataToFile_variable.get()
+        _measurementSettings.numberOfAverages = int(_averagesEntry_Variable.get())
 
         return _measurementSettings
     else:
