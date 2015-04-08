@@ -6,7 +6,7 @@ Callback functions of the graphic interface.
 import strings
 import numpy
 import player
-
+import generateMLS
 
 # Constants
 DEFAULT_VALUES_MLS_LENGTH = 32768
@@ -103,11 +103,10 @@ def testOutputDeviceCallback(deviceToUse, userValues_amplitude):
     """
 
     # TODO: make this use the sampling freq and amplitude selected in the window
-    _signal1 = [float(userValues_amplitude.get()) * numpy.sin(2 * numpy.pi * 1000 * n/44100) for n in range(44100)]
-    _signal2 = [float(userValues_amplitude.get()) * numpy.sin(2 * numpy.pi * 2000 * n/44100) for n in range(44100)]
+    _MLSSignal = generateMLS.generateMLS(pow(2, 15), float(userValues_amplitude.get()))
 
     # Sends them to the sound card
-    player.playSignals(_signal1, _signal2, samplingFreq=44100, normalize=False, deviceIndex=deviceToUse.interfaceID)
+    player.playSignals(_MLSSignal, _MLSSignal, samplingFreq=44100, normalize=False, deviceIndex=deviceToUse.interfaceID)
 
 
 def saveDataToFileCallback(saveDataToFile_variable):
