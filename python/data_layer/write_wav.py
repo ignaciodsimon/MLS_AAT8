@@ -6,9 +6,9 @@ Function:
 
 """
 
-
-import player
 import wave
+
+from python.logic_layer import player
 
 
 def saveImpulseResponseToWav(measurementResult):

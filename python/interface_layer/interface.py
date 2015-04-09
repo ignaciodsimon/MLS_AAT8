@@ -8,10 +8,10 @@ Function: (will keep the control until the window is closed)
 
 
 # Internal imports
-import interface_callbacks
-import strings
-import soundcards
-import measurement
+from ..interface_layer import interface_callbacks
+from .. import language_strings
+from ..logic_layer import soundcards
+from ..logic_layer import measurement
 
 
 # Global constants
@@ -120,7 +120,7 @@ def buildInterface():
     # -----------------------------
 
     _hardwareSettingFrame = Tkinter.LabelFrame(_root,
-                                              text=strings.TEXT_1,
+                                              text=language_strings.TEXT_1,
                                               width=580,
                                               height=300)
     _hardwareSettingFrame.configure(background=BACKGROUND_COLOR)
@@ -128,33 +128,33 @@ def buildInterface():
     _hardwareSettingFrame.configure(font=('', 0, 'bold'), foreground=FOREGROUND_COLOR)
 
     # Input / output devices labels
-    _hdwInputLabel = Tkinter.Label(_hardwareSettingFrame, text=strings.TEXT_2)
+    _hdwInputLabel = Tkinter.Label(_hardwareSettingFrame, text=language_strings.TEXT_2)
     _hdwInputLabel.place(x=20, y=10, anchor="nw")
     _hdwInputLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
-    _hdwOutputLabel = Tkinter.Label(_hardwareSettingFrame, text=strings.TEXT_3)
+    _hdwOutputLabel = Tkinter.Label(_hardwareSettingFrame, text=language_strings.TEXT_3)
     _hdwOutputLabel.place(x=300, y=10, anchor="nw")
     _hdwOutputLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
 
     # Input / output devices combos
     _inputDevicesVar = Tkinter.StringVar(_hardwareSettingFrame)
-    _inputDeviceCombo = Tkinter.OptionMenu(_hardwareSettingFrame, _inputDevicesVar, strings.TEXT_4)
+    _inputDeviceCombo = Tkinter.OptionMenu(_hardwareSettingFrame, _inputDevicesVar, language_strings.TEXT_4)
     _inputDeviceCombo.config(width=24, background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _inputDeviceCombo.place(x=20, y=30)
 
     _outputDevicesVar = Tkinter.StringVar(_hardwareSettingFrame)
-    _outputDeviceCombo = Tkinter.OptionMenu(_hardwareSettingFrame, _outputDevicesVar, strings.TEXT_4)
+    _outputDeviceCombo = Tkinter.OptionMenu(_hardwareSettingFrame, _outputDevicesVar, language_strings.TEXT_4)
     _outputDeviceCombo.config(width=24, background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _outputDeviceCombo.place(x=300, y=30)
 
     # Test device buttons
     _testInputDeviceButton = Tkinter.Button(_hardwareSettingFrame,
-                                           text=strings.TEXT_5, width=2,
+                                           text=language_strings.TEXT_5, width=2,
                                            command=lambda: interface_callbacks.testInputDeviceCallback())
     _testInputDeviceButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     _testInputDeviceButton.place(x=230, y=30)
 
     _testOutputDeviceButton = Tkinter.Button(_hardwareSettingFrame,
-                                            text=strings.TEXT_5, width=2,
+                                            text=language_strings.TEXT_5, width=2,
                                             command=lambda: interface_callbacks.
                                             testOutputDeviceCallback(selectedOutputInterface, _userValues_amplitude))
     _testOutputDeviceButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
@@ -182,39 +182,39 @@ def buildInterface():
     # --------------------------------
 
     _measurementSettingFrame = Tkinter.LabelFrame(_root,
-                                                 text=strings.TEXT_7,
+                                                 text=language_strings.TEXT_7,
                                                  width=300,
                                                  height=300)
     _measurementSettingFrame.place(x=600, y=90)
     _measurementSettingFrame.configure(font=('', 0, 'bold'), background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
 
     # Labels
-    _generatedSignalTitleLabel = Tkinter.Label(_measurementSettingFrame, text=strings.TEXT_8,
+    _generatedSignalTitleLabel = Tkinter.Label(_measurementSettingFrame, text=language_strings.TEXT_8,
                                               justify=Tkinter.LEFT)
     _generatedSignalTitleLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _generatedSignalTitleLabel.place(x=20, y=10)
 
-    _generatedSignalMLSLengthLabel = Tkinter.Label(_measurementSettingFrame, text=strings.TEXT_9,
+    _generatedSignalMLSLengthLabel = Tkinter.Label(_measurementSettingFrame, text=language_strings.TEXT_9,
                                                   justify=Tkinter.LEFT)
     _generatedSignalMLSLengthLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _generatedSignalMLSLengthLabel.place(x=30, y=40)
 
-    _generatedSignalAmplitudeLabel = Tkinter.Label(_measurementSettingFrame, text=strings.TEXT_10,
+    _generatedSignalAmplitudeLabel = Tkinter.Label(_measurementSettingFrame, text=language_strings.TEXT_10,
                                                   justify=Tkinter.LEFT)
     _generatedSignalAmplitudeLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _generatedSignalAmplitudeLabel.place(x=30, y=70)
 
-    _generatedSignalPlaybackDelayLabel = Tkinter.Label(_measurementSettingFrame, text=strings.TEXT_11,
+    _generatedSignalPlaybackDelayLabel = Tkinter.Label(_measurementSettingFrame, text=language_strings.TEXT_11,
                                                       justify=Tkinter.LEFT)
     _generatedSignalPlaybackDelayLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _generatedSignalPlaybackDelayLabel.place(x=30, y=100)
 
-    _recordedSignalTitleLabel = Tkinter.Label(_measurementSettingFrame, text=strings.TEXT_12,
+    _recordedSignalTitleLabel = Tkinter.Label(_measurementSettingFrame, text=language_strings.TEXT_12,
                                              justify=Tkinter.LEFT)
     _recordedSignalTitleLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _recordedSignalTitleLabel.place(x=20, y=150)
 
-    _recordedSignalDelayLabel = Tkinter.Label(_measurementSettingFrame, text=strings.TEXT_13,
+    _recordedSignalDelayLabel = Tkinter.Label(_measurementSettingFrame, text=language_strings.TEXT_13,
                                              justify=Tkinter.LEFT)
     _recordedSignalDelayLabel.configure(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _recordedSignalDelayLabel.place(x=30, y=180)
@@ -248,7 +248,7 @@ def buildInterface():
                            background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _decayInputEntry.place(x=200, y=180)
 
-    _measurementSettingsRecoverDefaultValuesButton = Tkinter.Button(_measurementSettingFrame, text=strings.TEXT_14,
+    _measurementSettingsRecoverDefaultValuesButton = Tkinter.Button(_measurementSettingFrame, text=language_strings.TEXT_14,
                                                                    command=lambda: interface_callbacks.
                                                                    recoverDefaultValuesCallback(_userValues_mlsLength,
                                                                                                 _userValues_amplitude,
@@ -259,7 +259,7 @@ def buildInterface():
     _measurementSettingsRecoverDefaultValuesButton.place(x=20, y=230)
 
     _measurementSettingsValidateNumbersButton = Tkinter.Button(_measurementSettingFrame,
-                                                              text=strings.TEXT_15,
+                                                              text=language_strings.TEXT_15,
                                                               command=lambda: interface_callbacks.
                                                               validateNumbersCallback(_userValues_mlsLength,
                                                                                       _userValues_amplitude,
@@ -274,7 +274,7 @@ def buildInterface():
     # -----------------------
 
     _outputDataFrame = Tkinter.LabelFrame(_root,
-                                         text=strings.TEXT_16,
+                                         text=language_strings.TEXT_16,
                                          width=450,
                                          height=135)
     _outputDataFrame.place(x=10, y=395)
@@ -288,7 +288,7 @@ def buildInterface():
     _saveDataToFileCheckButton.configure(background=BACKGROUND_COLOR)
     _saveDataToFileCheckButton.place(x=10, y=10)
 
-    _saveDataToFileLabel = Tkinter.Label(_outputDataFrame, text=strings.TEXT_17)
+    _saveDataToFileLabel = Tkinter.Label(_outputDataFrame, text=language_strings.TEXT_17)
     _saveDataToFileLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _saveDataToFileLabel.place(x=35, y=10)
 
@@ -300,7 +300,7 @@ def buildInterface():
     _saveDataToFileEntry.place(x=35, y=40)
 
     _saveDataToFileButton = Tkinter.Button(_outputDataFrame,
-                                          width=2, text=strings.TEXT_18,
+                                          width=2, text=language_strings.TEXT_18,
                                           command=lambda: interface_callbacks.
                                           saveDataToFileCallback(_saveDataToFile_variable))
     _saveDataToFileButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
@@ -314,7 +314,7 @@ def buildInterface():
     _plotOutputDataCheckButton.configure(background=BACKGROUND_COLOR)
     _plotOutputDataCheckButton.place(x=10, y=80)
 
-    _plotOutputDataLabel = Tkinter.Label(_outputDataFrame, text=strings.TEXT_19)
+    _plotOutputDataLabel = Tkinter.Label(_outputDataFrame, text=language_strings.TEXT_19)
     _plotOutputDataLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _plotOutputDataLabel.place(x=35, y=80)
 
@@ -323,13 +323,13 @@ def buildInterface():
     # -----------------------
 
     _executeMeasurementFrame = Tkinter.LabelFrame(_root,
-                                                 text=strings.TEXT_20,
+                                                 text=language_strings.TEXT_20,
                                                  width=430,
                                                  height=135)
     _executeMeasurementFrame.place(x=470, y=395)
     _executeMeasurementFrame.configure(font=('', 0, 'bold'), background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
 
-    _executeMeasurementButton = Tkinter.Button(_executeMeasurementFrame, text=strings.TEXT_21,
+    _executeMeasurementButton = Tkinter.Button(_executeMeasurementFrame, text=language_strings.TEXT_21,
                                               command=lambda: interface_callbacks.
                                               startMeasurement(_root,
                                                                bool(_plotOutputDataCheck.get()),
@@ -338,11 +338,11 @@ def buildInterface():
     _executeMeasurementButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     _executeMeasurementButton.place(x=350, y=80)
 
-    _executeMeasurementLabel = Tkinter.Label(_executeMeasurementFrame, text=strings.TEXT_22)
+    _executeMeasurementLabel = Tkinter.Label(_executeMeasurementFrame, text=language_strings.TEXT_22)
     _executeMeasurementLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _executeMeasurementLabel.place(x=20, y=10)
 
-    _status = Tkinter.Label(_root, text=strings.TEXT_23,
+    _status = Tkinter.Label(_root, text=language_strings.TEXT_23,
                            bd=1, relief=Tkinter.SUNKEN, anchor=Tkinter.W)
     _status.pack(side=Tkinter.BOTTOM, fill=Tkinter.X)
 
@@ -352,10 +352,6 @@ def buildInterface():
     _averagesEntry.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR,
                           highlightbackground=BACKGROUND_COLOR,  justify=Tkinter.RIGHT)
     _averagesEntry.place(x=170, y=10)
-
-
-
-
 
     # ---------------------------
     #  Loads data into interface

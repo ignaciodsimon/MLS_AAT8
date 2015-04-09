@@ -8,13 +8,13 @@ Function:
 
 
 import matplotlib.pyplot as plot
-import strings
+from .. import language_strings
 
 
 def plotResults(measurementResult):
     plot.plot(measurementResult.computedImpulseResponse)
-    plot.xlabel(strings.TEXT_33)
-    plot.ylabel(strings.TEXT_34)
-    plot.title(strings.TEXT_35)
+    plot.xlabel(language_strings.TEXT_33)
+    plot.ylabel(language_strings.TEXT_34)
+    plot.title(language_strings.TEXT_35)
     plot.grid()
     plot.show()

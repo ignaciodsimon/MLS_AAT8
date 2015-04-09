@@ -2,19 +2,18 @@
 Application entry point.
 """
 
-
-import interface
-import measurement
 import multiprocessing as mp
-import write_wav
-import plotting
-import strings
+
+from python.interface_layer import interface, plotting
+from python.logic_layer import measurement
+from python.data_layer import write_wav
+import language_strings
 
 
 if __name__ == "__main__":
 
     # Shows version and basic software information.
-    print strings.TEXT_0 + "\n" + strings.TEXT_23 + "\n" + strings.TEXT_42 + "\n"
+    print language_strings.TEXT_0 + "\n" + language_strings.TEXT_23 + "\n" + language_strings.TEXT_42 + "\n"
 
     # Included to support the multiprocessing on Windows machines
     mp.freeze_support()
@@ -30,18 +29,18 @@ if __name__ == "__main__":
     if isinstance(_returnedValue, measurement.MeasurementSettings):
 
         # Executes the measurement(s)
-        print strings.TEXT_36
+        print language_strings.TEXT_36
         measurementResult = measurement.executeMeasurement(_returnedValue)
-        print strings.TEXT_37
+        print language_strings.TEXT_37
 
         # Saves the output if necessary
         if _returnedValue.shouldSaveToFile:
-            print strings.TEXT_38
+            print language_strings.TEXT_38
             write_wav.saveImpulseResponseToWav(measurementResult)
-            print strings.TEXT_39
+            print language_strings.TEXT_39
 
         # Plots the output if necessary
         if _returnedValue.shouldPlot:
-            print strings.TEXT_40
+            print language_strings.TEXT_40
             plotting.plotResults(measurementResult)
-            print strings.TEXT_41
+            print language_strings.TEXT_41

@@ -6,9 +6,9 @@ Function:
 
 """
 
-
 import pyaudio
 import numpy
+
 import player
 
 

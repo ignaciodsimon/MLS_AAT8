@@ -3,10 +3,9 @@ Callback functions of the graphic interface.
 """
 
 
-import strings
-import numpy
-import player
-import generateMLS
+from .. import language_strings
+from ..logic_layer import player
+from ..logic_layer import generateMLS
 
 # Constants
 DEFAULT_VALUES_MLS_LENGTH = 32768
@@ -49,7 +48,7 @@ def parseInt(stringNumber):
     try:
         return abs(int(stringNumber))
     except ValueError:
-        return strings.TEXT_6
+        return language_strings.TEXT_6
 
 
 def parseFloat(stringNumber):
@@ -62,7 +61,7 @@ def parseFloat(stringNumber):
     try:
         return abs(float(stringNumber))
     except ValueError:
-        return strings.TEXT_6
+        return language_strings.TEXT_6
 
 
 def validateNumbersCallback(userValues_mlsLength, userValues_amplitude, userValues_predelay, userValues_decay):
@@ -137,15 +136,15 @@ def startMeasurement(mainWindow, shouldPlot, shouldSaveToFile, shouldSaveToFileF
     # Checks if user selected at least one output option
     if (not shouldPlot) and (not shouldSaveToFile):
         import tkMessageBox
-        tkMessageBox.showinfo(strings.TEXT_30, strings.TEXT_32)
+        tkMessageBox.showinfo(language_strings.TEXT_30, language_strings.TEXT_32)
         return
 
     # Check if output filename is present when necessary
     if shouldSaveToFile and not shouldSaveToFileFilename:
         import tkMessageBox
-        tkMessageBox.showinfo(strings.TEXT_30, strings.TEXT_31)
+        tkMessageBox.showinfo(language_strings.TEXT_30, language_strings.TEXT_31)
     else:
-        import interface
+        from python.interface_layer import interface
         # TODO: this is really dirty, should find another way of doing it
         interface.returnedValue = True
         mainWindow.destroy()
@@ -168,11 +167,11 @@ def changedInputDeviceCallBack(newValue, inputAudioInterfaces, inputDeviceLabelT
             selectedInputInterface = _card
 
     # Sets the new description
-    inputDeviceLabelText.set(strings.TEXT_24 + "\n  " + str(selectedInputInterface.samplingRates) + "\n" +
-                             strings.TEXT_25 + "\n  " + str(selectedInputInterface.bitDepths) + "\n" +
-                             strings.TEXT_26 + "\n  " + str(selectedInputInterface.countOfInputChannels) + "\n" +
-                             strings.TEXT_27 + "\n  " + str(selectedInputInterface.countOfOutputChannels) + "\n" +
-                             strings.TEXT_28 + "\n  " + str("%.2f" % (selectedInputInterface.inputLatency[0]*1000))
+    inputDeviceLabelText.set(language_strings.TEXT_24 + "\n  " + str(selectedInputInterface.samplingRates) + "\n" +
+                             language_strings.TEXT_25 + "\n  " + str(selectedInputInterface.bitDepths) + "\n" +
+                             language_strings.TEXT_26 + "\n  " + str(selectedInputInterface.countOfInputChannels) + "\n" +
+                             language_strings.TEXT_27 + "\n  " + str(selectedInputInterface.countOfOutputChannels) + "\n" +
+                             language_strings.TEXT_28 + "\n  " + str("%.2f" % (selectedInputInterface.inputLatency[0]*1000))
                              + " - " + str("%.2f" % (selectedInputInterface.inputLatency[1]*1000)))
 
 
@@ -193,9 +192,9 @@ def changedOutputDeviceCallBack(newValue, outputAudioInterfaces, outputDeviceLab
             selectedOutputInterface = _card
 
     # Sets the new description
-    outputDeviceLabelText.set(strings.TEXT_24 + "\n  " + str(selectedOutputInterface.samplingRates) + "\n" +
-                              strings.TEXT_25 + "\n  " + str(selectedOutputInterface.bitDepths) + "\n" +
-                              strings.TEXT_26 + "\n  " + str(selectedOutputInterface.countOfInputChannels) + "\n" +
-                              strings.TEXT_27 + "\n  " + str(selectedOutputInterface.countOfOutputChannels) + "\n" +
-                              strings.TEXT_29 + "\n  " + str("%.2f" % (selectedOutputInterface.outputLatency[0]*1000))
+    outputDeviceLabelText.set(language_strings.TEXT_24 + "\n  " + str(selectedOutputInterface.samplingRates) + "\n" +
+                              language_strings.TEXT_25 + "\n  " + str(selectedOutputInterface.bitDepths) + "\n" +
+                              language_strings.TEXT_26 + "\n  " + str(selectedOutputInterface.countOfInputChannels) + "\n" +
+                              language_strings.TEXT_27 + "\n  " + str(selectedOutputInterface.countOfOutputChannels) + "\n" +
+                              language_strings.TEXT_29 + "\n  " + str("%.2f" % (selectedOutputInterface.outputLatency[0]*1000))
                               + " - " + str("%.2f" % (selectedOutputInterface.outputLatency[1]*1000)))

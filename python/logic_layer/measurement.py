@@ -15,12 +15,13 @@ Joe.
 
 
 # Internal imports
-import recorder
-import parallelfunctions
-import player
-import computeIR
-import generateMLS
 import numpy
+
+import parallelfunctions
+import computeIR
+import recorder
+import player
+import generateMLS
 
 
 class MeasurementSettings:
