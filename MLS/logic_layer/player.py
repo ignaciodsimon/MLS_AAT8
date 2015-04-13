@@ -74,6 +74,29 @@ def _convertStreamToChannels(stereoStream):
 
     return [_channelL, _channelR]
 
+def _convertStreamToChannel(monoStream):
+    """
+    Converts a two channel stream in 8-bit 2-complement format to two vectors
+    of 16-bit numbers. This type of 8-bit stream is used when recording / playing
+    back signals using the sound card.
+
+    Joe.
+    :param stereoStream: 8-bit 2-complement data to convert
+    :return: Separated channels in format: [[L1 L2 L3 ...], [R1 R2 R3 ...]]
+    """
+
+    _channelL = [0]*(len(monoStream)/2)
+
+    _sampIndex = 0
+    for n in range(0, len(monoStream)-2, 2):
+
+        _channelL[_sampIndex] = _twosComplementToInt(ord(monoStream[n+1]), ord(monoStream[n]))
+
+        _sampIndex += 1
+
+    return _channelL
+
+
 def convertChannelToStream(inputChannel, normalize=False):
     """
     Converts one 16-bit audio signal to a wav-type stream (8-bit two-complement samples).

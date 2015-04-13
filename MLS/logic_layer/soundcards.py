@@ -5,36 +5,12 @@ Function: (returned data is a vector of objects of type SoundCard)
 
     SoundCard[] = getAllSoundCardsInfo()
 
-
 Joe.
 """
 
-
 import pyaudio
 
-
-class SoundCard:
-    """
-    Sound card definition class. Used to provide information about audio interfaces.
-
-    Joe.
-    """
-
-    # Class constructor
-    def __init__(self):
-        self.data = []
-
-    # Public 'fields'
-    interfaceID = -1
-    interfaceName = ""
-    isDefaultInputInterface = False
-    isDefaultOutputInterface = False
-    countOfInputChannels = -1
-    countOfOutputChannels = -1
-    samplingRates = -1
-    bitDepths = -1
-    inputLatency = -1
-    outputLatency = -1
+from MLS.type_classes import type_classes
 
 
 def _countSoundCards():
@@ -65,7 +41,7 @@ def getAllSoundCardsInfo():
 
         # Gets an available audio device
         _currentDevice = _devices.get_device_info_by_index(n)
-        _currentSoundCard = SoundCard()
+        _currentSoundCard = type_classes.SoundCard()
 
         # Bit depth is expressed in number of bytes (8 bits per byte)
         _currentSoundCard.bitDepths = _currentDevice.get("structVersion", -1)

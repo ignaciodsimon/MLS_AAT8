@@ -1,11 +1,13 @@
 """
 Callback functions of the graphic interface.
+
+Joe.
 """
 
 
-from .. import language_strings
-from ..logic_layer import player
-from ..logic_layer import generateMLS
+from MLS import language_strings
+from MLS.logic_layer import player
+from MLS.logic_layer import generate_mls
 
 # Constants
 DEFAULT_VALUES_MLS_LENGTH = 32768
@@ -33,6 +35,7 @@ def recoverDefaultOutputFilename(saveDataToFile_variable):
     """
     Sets the output filename to the default value. Default text is obtained from the strings file.
 
+    Joe.
     :param saveDataToFile_variable: Variable of type StringVar that will hold the string.
     """
     saveDataToFile_variable.set(DEFAULT_VALUES_OUTPUT_FILENAME)
@@ -42,6 +45,7 @@ def parseInt(stringNumber):
     """
     Parses an int to int with absolute value. Return an error string in case it can not be parsed.
 
+    Joe.
     :param stringNumber: String containing an int.
     :return: Parsed integer in absolute value or error string.
     """
@@ -55,6 +59,7 @@ def parseFloat(stringNumber):
     """
     Parses a float to float with absolute value. Return an error string in case it can not be parsed.
 
+    Joe.
     :param stringNumber: String containing a float.
     :return: Parsed float in absolute value or error string.
     """
@@ -85,6 +90,8 @@ def validateNumbersCallback(userValues_mlsLength, userValues_amplitude, userValu
 def testInputDeviceCallback():
     """
     Checks input device by measuring the received level.
+
+    Joe.
     """
 
     # TODO: complete this
@@ -96,12 +103,13 @@ def testOutputDeviceCallback(deviceToUse, userValues_amplitude):
     """
     Sends an MLS signal to the output of the selected device with the given amplitude.
 
+    Joe.
     :param deviceToUse: Output device to use, type SoundCard.
     :param userValues_amplitude: Amplitude of sinus signals, from 0.0 to 1.0.
     """
 
     # TODO: make this use the sampling freq and amplitude selected in the window
-    _MLSSignal = generateMLS.generateMLS(pow(2, 15), float(userValues_amplitude.get()))
+    _MLSSignal = generate_mls.generateMLS(pow(2, 15), float(userValues_amplitude.get()))
 
     # Sends them to the sound card
     player.playSignals(_MLSSignal, _MLSSignal, samplingFreq=44100, normalize=False, deviceIndex=deviceToUse.interfaceID)
@@ -116,10 +124,11 @@ def saveDataToFileCallback(saveDataToFile_variable):
         saveDataToFile_variable.set(_filename)
 
 
-def startMeasurement(mainWindow, shouldPlot, shouldSaveToFile, shouldSaveToFileFilename):
+def startMeasurement(mainWindow, shouldPlot, shouldSaveToFile, shouldSaveToFileFilename, shouldStartMeasurement):
     """
     Closes the window and makes it return the necessary object to start the measurement.
 
+    Joe.
     :param mainWindow: Window object to close.
     :param shouldPlot: Used to check if the user selected at least one output option.
     :param shouldSaveToFile: Used to check if the user selected at least one output option.
@@ -144,9 +153,8 @@ def startMeasurement(mainWindow, shouldPlot, shouldSaveToFile, shouldSaveToFileF
         import tkMessageBox
         tkMessageBox.showinfo(language_strings.TEXT_30, language_strings.TEXT_31)
     else:
-        from python.interface_layer import interface
-        # TODO: this is really dirty, should find another way of doing it
-        interface.returnedValue = True
+        # from MLS.interface_layer import interface
+        shouldStartMeasurement.set(True)
         mainWindow.destroy()
 
 
@@ -154,6 +162,7 @@ def changedInputDeviceCallBack(newValue, inputAudioInterfaces, inputDeviceLabelT
     """
     Callback from option list of input devices. Used to update the shown text with details of the interface.
 
+    Joe.
     :param newValue: New text that should display.
     :param inputAudioInterfaces: List of available input interfaces.
     :param inputDeviceLabelText: Associated variable that updates the options list.
@@ -179,6 +188,7 @@ def changedOutputDeviceCallBack(newValue, outputAudioInterfaces, outputDeviceLab
     """
     Callback from option list of output devices. Used to update the shown text with details of the interface.
 
+    Joe.
     :param newValue: New text that should display.
     :param outputAudioInterfaces: List of available output interfaces.
     :param outputDeviceLabelText: Associated variable that updates the options list.

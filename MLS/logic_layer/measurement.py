@@ -5,11 +5,6 @@ Function: (measurement settings is an object of type MeasurementSettings)
 
     executeMeasurement(measurementSetting)
 
-Also holds two public classes:
-
-    class MeasurementSettings
-    class MeasurementResult
-
 Joe.
 """
 
@@ -17,67 +12,12 @@ Joe.
 # Internal imports
 import numpy
 
-import parallelfunctions
-import computeIR
+import parallel_functions
+import compute_ir
 import recorder
 import player
-import generateMLS
-
-
-class MeasurementSettings:
-    """
-    Measurement settings definition class. Used to provide information of measurement to be performed.
-
-    Public fields:
-
-    MLSLength: Desired length of MLS signal.
-    inputDeviceSamplFreq: Input device sampling frequency.
-    outputDeviceSamplFreq: Output device sampling frequency.
-    signalAmplitude: Amplitude of MLS signal.
-    preDelayForPlayback: Pre-delay to correct for the latency of sound card.
-    decayTime: Decay time of system-under-test. Should be a bit larger than expected one.
-    inputDevice: Input audio device to use, index from zero. Omit to use default device.
-    outputDevice: Output audio device to use, index from zero. Omit to use default device.
-
-    Joe.
-    """
-
-    # Class constructor
-    def __init__(self):
-        self.data = []
-
-    # Public fields
-    MLSLength = 32768
-    inputDeviceSamplFreq = 44100
-    outputDeviceSamplFreq = 44100
-    signalAmplitude = 0.5
-    preDelayForPlayback = 0.25
-    decayTime = 5.0
-    inputDevice = -1
-    outputDevice = -1
-    normalizeOutput = 1
-
-    shouldPlot = False
-    shouldSaveToFile = False
-    shouldSaveToFileFilename = ""
-
-    numberOfAverages = 1
-
-
-class MeasurementResult:
-    """
-    Measurement results definition class. Used to return information of performed measurement.
-
-    Joe.
-    """
-
-    # Class constructor
-    def __init__(self):
-        self.data = []
-
-    # Public fields
-    settings = 0
-    computedImpulseResponse = 0
+import generate_mls
+from MLS.type_classes import type_classes
 
 
 def executeMeasurement(measurementSetting):
@@ -95,7 +35,7 @@ def executeMeasurement(measurementSetting):
     _channels = 2
 
     # Generate the MLS signal
-    _MLSSignal = generateMLS.generateMLS(measurementSetting.MLSLength, measurementSetting.signalAmplitude)
+    _MLSSignal = generate_mls.generateMLS(measurementSetting.MLSLength, measurementSetting.signalAmplitude)
 
     # Padding MLS signal with zeros at the beginning
     _MLS_WithZeros = [0] * int(round(measurementSetting.preDelayForPlayback * measurementSetting.outputDeviceSamplFreq)
@@ -120,7 +60,7 @@ def executeMeasurement(measurementSetting):
     for _i in range(measurementSetting.numberOfAverages):
 
         # Runs player and recorder simultaneously
-        [_recorderOutputData, _playerOutputData] = parallelfunctions.runInParallel(recorder.rec,
+        [_recorderOutputData, _playerOutputData] = parallel_functions.runInParallel(recorder.rec,
                                                                                    _recorderArguments,
                                                                                    player.playSignals,
                                                                                    _playerArguments)
@@ -135,13 +75,19 @@ def executeMeasurement(measurementSetting):
     _paddedMLSSignal = [0]*(len(_channelL))
     _paddedMLSSignal[0:len(_MLSSignal)] = _MLSSignal
 
-    _IRLeft = computeIR.computeCircularXCorr(_channelL, _paddedMLSSignal)
-    _IRRight = computeIR.computeCircularXCorr(_channelR, _paddedMLSSignal)
-    _corrected = computeIR.correctSignalWithIR(_IRLeft, _IRRight)
+    _IRLeft = compute_ir.computeCircularXCorr(_channelL, _paddedMLSSignal)
+    _IRRight = compute_ir.computeCircularXCorr(_channelR, _paddedMLSSignal)
+
+    if measurementSetting.referenceSignalIsLeft:
+        _corrected = compute_ir.correctSignalWithIR(inputSignal=_IRRight, referenceImpulseResponse=_IRLeft)
+    else:
+        _corrected = compute_ir.correctSignalWithIR(inputSignal=_IRLeft, referenceImpulseResponse=_IRRight)
 
     # Creates output object
-    _resultData = MeasurementResult()
+    _resultData = type_classes.MeasurementResult()
     _resultData.settings = measurementSetting
     _resultData.computedImpulseResponse = _corrected
+    _resultData.partialIR_Left = _IRLeft
+    _resultData.partialIR_Right = _IRRight
 
     return _resultData

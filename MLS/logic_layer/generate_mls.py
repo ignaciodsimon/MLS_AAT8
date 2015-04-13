@@ -31,9 +31,9 @@ def generateMLS(sequenceLength=16000, amplitude=pow(10, -3.0/20)):
 
     # Creates the registers
     _mlsRegisters = [1]*_sequenceBits
-    _mlsSignal = [0]*sequenceLength
+    _mlsSignal = [0]*(sequenceLength-0)
 
-    for n in range(sequenceLength):
+    for n in range(sequenceLength-0):
         # Last takes the value of first plus second
         _sumValue = numpy.bitwise_xor(_mlsRegisters[0], _mlsRegisters[1])
 
@@ -46,10 +46,11 @@ def generateMLS(sequenceLength=16000, amplitude=pow(10, -3.0/20)):
         # Saves current output
         _mlsSignal[n] = _mlsRegisters[0]
 
-    # Corrects generated signal to obtain zero mean
-    _mlsSignal = _mlsSignal - numpy.mean(_mlsSignal)
-
     # Corrects signal to desired amplitude
     _mlsSignal = numpy.dot(_mlsSignal, amplitude)
+
+    # Corrects generated signal to obtain zero mean
+    # _mlsSignal = numpy.subtract(_mlsSignal, amplitude/2)
+    _mlsSignal = numpy.subtract(_mlsSignal, numpy.mean(_mlsSignal))
 
     return _mlsSignal

@@ -4,20 +4,24 @@ Functions to create the graphic interface, wire the events and load data.
 Function: (will keep the control until the window is closed)
     buildInterface()
 
+Joe.
 """
 
 
-# Internal imports
-from ..interface_layer import interface_callbacks
-from .. import language_strings
-from ..logic_layer import soundcards
-from ..logic_layer import measurement
+# Python imports
+import os
 
+# Internal imports
+from MLS.interface_layer import interface_callbacks
+from MLS import language_strings
+from MLS.logic_layer import soundcards
+from MLS.type_classes import type_classes
 
 # Global constants
 BACKGROUND_COLOR = "#10547F"
 FOREGROUND_COLOR = "#FFFFFF"
-TOP_BANNER_FILENAME = "top_banner.gif"
+TOP_BANNER_FILENAME = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) \
+                      + "/top_banner.gif"
 WINDOW_SIZE = "910x570"
 
 # Text strings
@@ -30,10 +34,14 @@ selectedInputInterface = None
 selectedOutputInterface = None
 inputDeviceLabelText = None
 outputDeviceLabelText = None
-returnedValue = False
 
 
 def _fillComboWithList(optionStrings, inputCombo, associatedVar, defaultIndex):
+    # TODO: comment this
+    """
+
+    Joe.
+    """
 
     import Tkinter
 
@@ -49,7 +57,11 @@ def _fillComboWithList(optionStrings, inputCombo, associatedVar, defaultIndex):
 
 
 def _loadDeviceLists(inputDeviceCombo, inputDevicesVar, outputDeviceCombo, outputDevicesVar):
+    # TODO: comment this
+    """
 
+    Joe.
+    """
     _availableCards = soundcards.getAllSoundCardsInfo()
 
     _inputCardsNames = []
@@ -100,7 +112,14 @@ def _loadDeviceLists(inputDeviceCombo, inputDevicesVar, outputDeviceCombo, outpu
 
 
 def buildInterface():
+    """
+    Builds the graphical interface, shows the main window up, loads data from logic layer into
+    components and wires the events.
 
+    Joe.
+    :return: Object of type <Boolean> or <MeasurementSettings>, depending on if a measurement should
+    be performed or not.
+    """
     import Tkinter
 
     # Root window
@@ -329,12 +348,15 @@ def buildInterface():
     _executeMeasurementFrame.place(x=470, y=395)
     _executeMeasurementFrame.configure(font=('', 0, 'bold'), background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
 
+    _shouldStartMeasurementVar = Tkinter.BooleanVar()
+    _shouldStartMeasurementVar.set(False)
     _executeMeasurementButton = Tkinter.Button(_executeMeasurementFrame, text=language_strings.TEXT_21,
                                               command=lambda: interface_callbacks.
                                               startMeasurement(_root,
                                                                bool(_plotOutputDataCheck.get()),
                                                                bool(_saveDataToFileCheck.get()),
-                                                               _saveDataToFile_variable.get()))
+                                                               _saveDataToFile_variable.get(),
+                                                               _shouldStartMeasurementVar))
     _executeMeasurementButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     _executeMeasurementButton.place(x=350, y=80)
 
@@ -367,8 +389,8 @@ def buildInterface():
     # Gives control to window manager
     _root.mainloop()
 
-    if returnedValue == True:
-        _measurementSettings = measurement.MeasurementSettings()
+    if bool(_shouldStartMeasurementVar.get()):
+        _measurementSettings = type_classes.MeasurementSettings()
 
         _measurementSettings.MLSLength = int(_userValues_mlsLength.get())
         _measurementSettings.inputDeviceSamplFreq = int(selectedInputInterface.samplingRates[0])

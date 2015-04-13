@@ -1,12 +1,24 @@
 """
 Application entry point.
+
+Joe.
 """
 
+
+# Adds parent directory to path, for the imports
+import os
+import sys
+# parent = os.path.dirname(os.path.abspath(__file__))
+parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, parent)
+
+# Python imports
 import multiprocessing as mp
 
-from python.interface_layer import interface, plotting
-from python.logic_layer import measurement
-from python.data_layer import write_wav
+# Private imports
+from interface_layer import interface, plotting
+from logic_layer import measurement, results_handling
+from type_classes import type_classes
 import language_strings
 
 
@@ -26,7 +38,7 @@ if __name__ == "__main__":
     _pool.join()
 
     # Checks if window was closed or if the "start" button was clicked
-    if isinstance(_returnedValue, measurement.MeasurementSettings):
+    if not isinstance(_returnedValue, bool):
 
         # Executes the measurement(s)
         print language_strings.TEXT_36
@@ -36,7 +48,7 @@ if __name__ == "__main__":
         # Saves the output if necessary
         if _returnedValue.shouldSaveToFile:
             print language_strings.TEXT_38
-            write_wav.saveImpulseResponseToWav(measurementResult)
+            results_handling.saveResultsToFile(measurementResult)
             print language_strings.TEXT_39
 
         # Plots the output if necessary
