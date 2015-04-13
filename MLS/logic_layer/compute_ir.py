@@ -138,6 +138,12 @@ def computeManualCircularXCorrWithoutDisplacement(signalA, signalB):
     return _computedXCorr
 
 
+"""
+The following code is used to test the different methods for computing circular cross-correlation.
+It also provides some estimations on the SNR that can be obtained from the methods.
+
+Joe.
+"""
 if __name__ == "__main__":
     import random
     from datetime import datetime
