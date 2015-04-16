@@ -5,7 +5,7 @@ Joe.
 """
 
 
-# Adds parent directory to path, for the imports
+# Adds parent directory to path, for the internal imports
 import os
 import sys
 # parent = os.path.dirname(os.path.abspath(__file__))
@@ -18,7 +18,7 @@ import multiprocessing as mp
 # Private imports
 from interface_layer import interface, plotting
 from logic_layer import measurement, results_handling
-from type_classes import type_classes
+# from type_classes import type_classes
 import language_strings
 
 
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     _pool.join()
 
     # Checks if window was closed or if the "start" button was clicked
-    if not isinstance(_returnedValue, bool):
+    while not isinstance(_returnedValue, bool):
 
         # Executes the measurement(s)
         print language_strings.TEXT_36
@@ -54,5 +54,15 @@ if __name__ == "__main__":
         # Plots the output if necessary
         if _returnedValue.shouldPlot:
             print language_strings.TEXT_40
-            plotting.plotResults(measurementResult)
+            _pool = mp.Pool()
+            _result1 = _pool.apply_async(plotting.plotResults, [measurementResult])
+            _pool.close()
+            _pool.join()
+            # plotting.plotResults(measurementResult)
             print language_strings.TEXT_41
+
+        _pool = mp.Pool()
+        _result1 = _pool.apply_async(interface.buildInterface, [_returnedValue])
+        _returnedValue = _result1.get()
+        _pool.close()
+        _pool.join()

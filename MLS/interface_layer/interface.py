@@ -111,15 +111,18 @@ def _loadDeviceLists(inputDeviceCombo, inputDevicesVar, outputDeviceCombo, outpu
                                                     outputDeviceLabelText, None)
 
 
-def buildInterface():
+def buildInterface(defaultMeasurementSetup=None):
     """
     Builds the graphical interface, shows the main window up, loads data from logic layer into
     components and wires the events.
 
     Joe.
+
+    :param defaultMeasurementSetup: Object <MeasurementSetting> with new settings to override default ones.
     :return: Object of type <Boolean> or <MeasurementSettings>, depending on if a measurement should
     be performed or not.
     """
+
     import Tkinter
 
     # Root window
@@ -272,7 +275,8 @@ def buildInterface():
                                                                    recoverDefaultValuesCallback(_userValues_mlsLength,
                                                                                                 _userValues_amplitude,
                                                                                                 _userValues_predelay,
-                                                                                                _userValues_decay))
+                                                                                                _userValues_decay,
+                                                                                                defaultMeasurementSetup))
     _measurementSettingsRecoverDefaultValuesButton.config(highlightbackground=BACKGROUND_COLOR,
                                                          bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     _measurementSettingsRecoverDefaultValuesButton.place(x=20, y=230)
@@ -312,10 +316,10 @@ def buildInterface():
     _saveDataToFileLabel.place(x=35, y=10)
 
     _saveDataToFile_variable = Tkinter.StringVar()
-    interface_callbacks.recoverDefaultOutputFilename(_saveDataToFile_variable)
+    interface_callbacks.recoverDefaultOutputFilename(_saveDataToFile_variable, defaultMeasurementSetup)
     _saveDataToFileEntry = Tkinter.Entry(_outputDataFrame, textvariable=_saveDataToFile_variable, width=40)
     _saveDataToFileEntry.config(background=BACKGROUND_COLOR,
-                               foreground=FOREGROUND_COLOR, highlightbackground=BACKGROUND_COLOR)
+                               foreground=FOREGROUND_COLOR, highlightbackground=BACKGROUND_COLOR, justify=Tkinter.RIGHT)
     _saveDataToFileEntry.place(x=35, y=40)
 
     _saveDataToFileButton = Tkinter.Button(_outputDataFrame,
@@ -381,7 +385,9 @@ def buildInterface():
 
     # Sets default values
     interface_callbacks.recoverDefaultValuesCallback(_userValues_mlsLength, _userValues_amplitude,
-                                                     _userValues_predelay, _userValues_decay)
+                                                     _userValues_predelay, _userValues_decay,
+                                                     _averagesEntry_Variable, _plotOutputDataCheck,
+                                                     _saveDataToFileCheck, defaultMeasurementSetup)
 
     # Loads combos
     _loadDeviceLists(_inputDeviceCombo, _inputDevicesVar, _outputDeviceCombo, _outputDevicesVar)
@@ -396,7 +402,7 @@ def buildInterface():
         _measurementSettings.inputDeviceSamplFreq = int(selectedInputInterface.samplingRates[0])
         _measurementSettings.outputDeviceSamplFreq = int(selectedOutputInterface.samplingRates[0])
         _measurementSettings.signalAmplitude = float(_userValues_amplitude.get())
-        _measurementSettings.preDelayForPlayback = float(_userValues_predelay.get()) / 1000.0
+        _measurementSettings.preDelayForPlayback = float(_userValues_predelay.get())
         _measurementSettings.decayTime = float(_userValues_decay.get())
         _measurementSettings.inputDevice = selectedInputInterface.interfaceID
         _measurementSettings.outputDevice = selectedOutputInterface.interfaceID

@@ -15,30 +15,51 @@ DEFAULT_VALUES_AMPLITUDE = 0.5
 DEFAULT_VALUES_PLAYBACK_PREDELAY = 250
 DEFAULT_VALUES_EXPECTED_DECAY = 5.0
 DEFAULT_VALUES_OUTPUT_FILENAME = ""
+DEFAULT_VALUES_AVERAGES = 1
+DEFAULT_VALUES_SHOULD_SAVE_TO_FILE = False
+DEFAULT_VALUES_SHOULD_PLOT = True
 
 
 # Callback functions
-def recoverDefaultValuesCallback(userValues_mlsLength, userValues_amplitude, userValues_predelay, userValues_decay):
+def recoverDefaultValuesCallback(userValues_mlsLength, userValues_amplitude, userValues_predelay,
+                                 userValues_decay, userValues_averages, _plotOutputDataCheck,
+                                 _saveDataToFileCheck, defaultMeasurementSetup):
     """
     Callback function for "Recover default values" button on section 2 "measurement settings".
 
     Joe.
     """
 
-    userValues_mlsLength.set(DEFAULT_VALUES_MLS_LENGTH)
-    userValues_amplitude.set(DEFAULT_VALUES_AMPLITUDE)
-    userValues_predelay.set(DEFAULT_VALUES_PLAYBACK_PREDELAY)
-    userValues_decay.set(DEFAULT_VALUES_EXPECTED_DECAY)
+    if defaultMeasurementSetup is None:
+        userValues_mlsLength.set(DEFAULT_VALUES_MLS_LENGTH)
+        userValues_amplitude.set(DEFAULT_VALUES_AMPLITUDE)
+        userValues_predelay.set(DEFAULT_VALUES_PLAYBACK_PREDELAY)
+        userValues_decay.set(DEFAULT_VALUES_EXPECTED_DECAY)
+        userValues_averages.set(DEFAULT_VALUES_AVERAGES)
+        _plotOutputDataCheck.set(DEFAULT_VALUES_SHOULD_PLOT)
+        _saveDataToFileCheck.set(DEFAULT_VALUES_SHOULD_SAVE_TO_FILE)
+    else:
+        userValues_mlsLength.set(defaultMeasurementSetup.MLSLength)
+        userValues_amplitude.set(defaultMeasurementSetup.signalAmplitude)
+        userValues_predelay.set(defaultMeasurementSetup.preDelayForPlayback)
+        userValues_decay.set(defaultMeasurementSetup.decayTime)
+        userValues_averages.set(defaultMeasurementSetup.numberOfAverages)
+        _plotOutputDataCheck.set(defaultMeasurementSetup.shouldPlot)
+        _saveDataToFileCheck.set(defaultMeasurementSetup.shouldSaveToFile)
 
 
-def recoverDefaultOutputFilename(saveDataToFile_variable):
+def recoverDefaultOutputFilename(saveDataToFile_variable, defaultMeasurementSetup):
     """
     Sets the output filename to the default value. Default text is obtained from the strings file.
 
     Joe.
     :param saveDataToFile_variable: Variable of type StringVar that will hold the string.
     """
-    saveDataToFile_variable.set(DEFAULT_VALUES_OUTPUT_FILENAME)
+
+    if defaultMeasurementSetup is None:
+        saveDataToFile_variable.set(DEFAULT_VALUES_OUTPUT_FILENAME)
+    else:
+        saveDataToFile_variable.set(defaultMeasurementSetup.shouldSaveToFileFilename)
 
 
 def parseInt(stringNumber):

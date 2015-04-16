@@ -38,7 +38,7 @@ def executeMeasurement(measurementSetting):
     _MLSSignal = generate_mls.generateMLS(measurementSetting.MLSLength, measurementSetting.signalAmplitude)
 
     # Padding MLS signal with zeros at the beginning
-    _MLS_WithZeros = [0] * int(round(measurementSetting.preDelayForPlayback * measurementSetting.outputDeviceSamplFreq)
+    _MLS_WithZeros = [0] * int(round(measurementSetting.preDelayForPlayback/1000.0 * measurementSetting.outputDeviceSamplFreq)
                                + measurementSetting.MLSLength)
     _MLS_WithZeros[len(_MLS_WithZeros)-len(_MLSSignal):len(_MLS_WithZeros)] = _MLSSignal
     _MLSSignal = _MLS_WithZeros
