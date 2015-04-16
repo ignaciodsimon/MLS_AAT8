@@ -163,25 +163,28 @@ if __name__ == "__main__":
     _timeAfter = datetime.now()
     _timeDifference = _timeAfter - _timeBefore
     print _timeDifference.total_seconds()
-    print "Done ..."
-    #
-    # print "Testing mode 'Manual #2'..."
-    # # For half second of audio: 91.902(s)
-    # _timeBefore = datetime.now()
-    # output2 = computeManualCircularXCorrWithoutDisplacement(signalA, signalB)
-    # _timeAfter = datetime.now()
-    # _timeDifference = _timeAfter - _timeBefore
-    # print _timeDifference.total_seconds()
-    # print "Done ..."
+    print "  Done ..."
+
+    print "Testing mode 'Manual #2'..."
+    # For half second of audio: 91.902(s)
+    # For quarter of second of audio: 25.195(s)
+    _timeBefore = datetime.now()
+    output2 = computeManualCircularXCorrWithoutDisplacement(signalA, signalB)
+    _timeAfter = datetime.now()
+    _timeDifference = _timeAfter - _timeBefore
+    print _timeDifference.total_seconds()
+    print "  Done ..."
 
     print "Testing mode 'FFT Normal' ..."
     # For half second of audio: 0.006542(s)
+    # For five seconds of audio: 0.208532(s)
+    # For fifty seconds of audio: 2.111742(s)
     _timeBefore = datetime.now()
     output3 = computeCircularXCorr(signalB, signalA, frequencyBinsFactor=1)
     _timeAfter = datetime.now()
     _timeDifference = _timeAfter - _timeBefore
     print _timeDifference.total_seconds()
-    print "Done ..."
+    print "  Done ..."
 
     print "Testing mode 'FFT Oversampled' ..."
     # For half second of audio: 0.006542(s)
@@ -190,29 +193,29 @@ if __name__ == "__main__":
     _timeAfter = datetime.now()
     _timeDifference = _timeAfter - _timeBefore
     print _timeDifference.total_seconds()
-    print "Done ..."
+    print "  Done ..."
 
     print "Computing SNR for each case ..."
     import operator
     peakIndex1, peakValue1 = max(enumerate(output1), key=operator.itemgetter(1))
     noise1 = output1
     noise1[peakIndex1] = 0
-    print "SNR mode 1:", 20*numpy.log10(peakValue1 / _computeRMSValue(noise1))
+    print "  SNR mode 1:", 20*numpy.log10(peakValue1 / _computeRMSValue(noise1))
 
-    # peakIndex2, peakValue2 = max(enumerate(output2), key=operator.itemgetter(1))
-    # noise2 = output2
-    # noise2[peakIndex2] = 0
-    # print "SNR mode 2:", 20*numpy.log10(peakValue2 / _computeRMSValue(noise2))
+    peakIndex2, peakValue2 = max(enumerate(output2), key=operator.itemgetter(1))
+    noise2 = output2
+    noise2[peakIndex2] = 0
+    print "  SNR mode 2:", 20*numpy.log10(peakValue2 / _computeRMSValue(noise2))
 
     peakIndex3, peakValue3 = max(enumerate(output3), key=operator.itemgetter(1))
     noise3 = output3
     noise3[peakIndex3] = 0
-    print "SNR mode FFT short:", 20*numpy.log10(peakValue3 / _computeRMSValue(noise3))
+    print "  SNR mode FFT short:", 20*numpy.log10(peakValue3 / _computeRMSValue(noise3))
 
     peakIndex4, peakValue4 = max(enumerate(output4), key=operator.itemgetter(1))
     noise4 = output4
     noise4[peakIndex4] = 0
-    print "SNR mode FFT long:", 20*numpy.log10(peakValue4 / _computeRMSValue(noise4))
+    print "  SNR mode FFT long:", 20*numpy.log10(peakValue4 / _computeRMSValue(noise4))
 
     # import matplotlib.pyplot as plot
     # plot.subplot(3, 1, 1)
@@ -227,7 +230,6 @@ if __name__ == "__main__":
     # plot.show()
 
     # Results:
-    #
     #
     # With: 1 and 100, delta = 20.02 dB
     # SNR mode FFT short: 49.9386764792
