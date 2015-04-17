@@ -13,17 +13,23 @@ from MLS.logic_layer import generate_mls
 DEFAULT_VALUES_MLS_LENGTH = 32768
 DEFAULT_VALUES_AMPLITUDE = 0.5
 DEFAULT_VALUES_PLAYBACK_PREDELAY = 250
-DEFAULT_VALUES_EXPECTED_DECAY = 5.0
-DEFAULT_VALUES_OUTPUT_FILENAME = ""
+DEFAULT_VALUES_EXPECTED_DECAY = 2.0
+DEFAULT_VALUES_OUTPUT_FILENAME = "/Users/maese/Documents/otra.wav"
 DEFAULT_VALUES_AVERAGES = 1
 DEFAULT_VALUES_SHOULD_SAVE_TO_FILE = False
 DEFAULT_VALUES_SHOULD_PLOT = True
+DEFAULT_VALUES_DUAL_MODE_ENABLED = False
+DEFAULT_VALUES_HW_CORRECTION_L_FILENAME = ""
+DEFAULT_VALUES_HW_CORRECTION_R_FILENAME = ""
+DEFAULT_VALUES_HW_CORRECTION_ENABLED = False
 
 
 # Callback functions
 def recoverDefaultValuesCallback(userValues_mlsLength, userValues_amplitude, userValues_predelay,
-                                 userValues_decay, userValues_averages, _plotOutputDataCheck,
-                                 _saveDataToFileCheck, defaultMeasurementSetup):
+                                 userValues_decay, userValues_averages, userValues__plotOutputDataCheck,
+                                 userValues_saveDataToFileCheck, defaultMeasurementSetup, userValues_channelMode,
+                                 userValues_hwIRCorrectionEnabledCheck, userValues_hwCorrectionFilename_L,
+                                 userValues_hwCorrectionFilename_R):
     """
     Callback function for "Recover default values" button on section 2 "measurement settings".
 
@@ -36,16 +42,35 @@ def recoverDefaultValuesCallback(userValues_mlsLength, userValues_amplitude, use
         userValues_predelay.set(DEFAULT_VALUES_PLAYBACK_PREDELAY)
         userValues_decay.set(DEFAULT_VALUES_EXPECTED_DECAY)
         userValues_averages.set(DEFAULT_VALUES_AVERAGES)
-        _plotOutputDataCheck.set(DEFAULT_VALUES_SHOULD_PLOT)
-        _saveDataToFileCheck.set(DEFAULT_VALUES_SHOULD_SAVE_TO_FILE)
+        userValues__plotOutputDataCheck.set(DEFAULT_VALUES_SHOULD_PLOT)
+        userValues_saveDataToFileCheck.set(DEFAULT_VALUES_SHOULD_SAVE_TO_FILE)
+
+        if DEFAULT_VALUES_DUAL_MODE_ENABLED:
+            userValues_channelMode.set(1)
+        else:
+            userValues_channelMode.set(0)
+
+        userValues_hwCorrectionFilename_L.set(DEFAULT_VALUES_HW_CORRECTION_L_FILENAME)
+        userValues_hwCorrectionFilename_R.set(DEFAULT_VALUES_HW_CORRECTION_R_FILENAME)
+        userValues_hwIRCorrectionEnabledCheck.set(DEFAULT_VALUES_HW_CORRECTION_ENABLED)
+
     else:
         userValues_mlsLength.set(defaultMeasurementSetup.MLSLength)
         userValues_amplitude.set(defaultMeasurementSetup.signalAmplitude)
         userValues_predelay.set(defaultMeasurementSetup.preDelayForPlayback)
         userValues_decay.set(defaultMeasurementSetup.decayTime)
-        userValues_averages.set(defaultMeasurementSetup.numberOfAverages)
-        _plotOutputDataCheck.set(defaultMeasurementSetup.shouldPlot)
-        _saveDataToFileCheck.set(defaultMeasurementSetup.shouldSaveToFile)
+        userValues_averages.set(defaultMeasurementSetup.numberOfPreAverages)
+        userValues__plotOutputDataCheck.set(defaultMeasurementSetup.shouldPlot)
+        userValues_saveDataToFileCheck.set(defaultMeasurementSetup.shouldSaveToFile)
+
+        if defaultMeasurementSetup.dualChannelMode:
+            userValues_channelMode.set(1)
+        else:
+            userValues_channelMode.set(0)
+
+        userValues_hwIRCorrectionEnabledCheck.set(defaultMeasurementSetup.shouldUseHWCorrection)
+        userValues_hwCorrectionFilename_L.set(defaultMeasurementSetup.hwCorrectionFilename_L)
+        userValues_hwCorrectionFilename_R.set(defaultMeasurementSetup.hwCorrectionFilename_R)
 
 
 def recoverDefaultOutputFilename(saveDataToFile_variable, defaultMeasurementSetup):
@@ -71,7 +96,7 @@ def parseInt(stringNumber):
     :return: Parsed integer in absolute value or error string.
     """
     try:
-        return abs(int(stringNumber))
+        return abs(int(float(stringNumber)))
     except ValueError:
         return language_strings.TEXT_6
 
@@ -143,6 +168,18 @@ def saveDataToFileCallback(saveDataToFile_variable):
 
     if _filename != "":
         saveDataToFile_variable.set(_filename)
+
+
+def openFileCallback(openFile_variable):
+
+    import tkFileDialog
+
+    _fileOpenOptions = dict(defaultextension='.wav',
+                            filetypes=[('WAV files', '*.wav'), ('All files', '*.*')])
+    _filename = tkFileDialog.askopenfilename(**_fileOpenOptions)
+
+    if _filename != "":
+        openFile_variable.set(_filename)
 
 
 def startMeasurement(mainWindow, shouldPlot, shouldSaveToFile, shouldSaveToFileFilename, shouldStartMeasurement):

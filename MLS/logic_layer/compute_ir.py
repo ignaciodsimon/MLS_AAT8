@@ -13,6 +13,28 @@ import numpy
 from math import sqrt
 
 
+def normalizeVectorLengths(vectorA, vectorB):
+    """
+    Returns the vectors padded with zeros so their length matches.
+
+    Joe.
+    :param vectorA: One vector
+    :param vectorB: Another vector
+    :return: [VectorA_normalized, VectorB_normalized]
+    """
+
+    if len(vectorA) < len(vectorB):
+        _newVectorA = [0]*len(vectorB)
+        _newVectorA[0:len(vectorA)] = vectorA
+        _newVectorB = vectorB
+    else:
+        _newVectorB = [0]*len(vectorA)
+        _newVectorB[0:len(vectorB)] = vectorB
+        _newVectorA = vectorA
+
+    return [_newVectorA, _newVectorB]
+
+
 def correctSignalWithIR(inputSignal, referenceImpulseResponse):
     """
     Corrects a recorded signal with a known impulse response. It can be used to correct for
@@ -23,6 +45,10 @@ def correctSignalWithIR(inputSignal, referenceImpulseResponse):
     :param referenceImpulseResponse: Known impulse response the signal was processed with.
     :return: Signal corrected (de-convolved).
     """
+
+    # Normalizes the length of the two vectors
+    if len(inputSignal) != len(referenceImpulseResponse):
+        [inputSignal, referenceImpulseResponse] = normalizeVectorLengths(inputSignal, referenceImpulseResponse)
 
     # Computes FFT of input signals
     _fftSignal = numpy.fft.fft(inputSignal)

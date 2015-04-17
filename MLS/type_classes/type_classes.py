@@ -30,13 +30,32 @@ class MeasurementSettings:
     inputDevice = -1
     outputDevice = -1
     normalizeOutput = 1
-    referenceSignalIsLeft = False
 
     shouldPlot = False
     shouldSaveToFile = False
     shouldSaveToFileFilename = ""
 
-    numberOfAverages = 1
+    numberOfPreAverages = 1
+    numberOfPostAverages = 1
+
+    # Used only in single channel mode
+    referenceSignalIsLeft = False
+
+    # If enabled, the two inputs are taken as signals
+    # If disabled, one input is in loop and used as correction
+    dualChannelMode = False
+
+    # In single channel mode, only the Left calibration may be needed
+    calibration_Left = None
+    calibration_Right = None
+
+    # Only used for dual channel mode, to compensate for HW delay
+    hwCorrection_Left = None
+    hwCorrection_Right = None
+
+    shouldUseHWCorrection = False
+    hwCorrectionFilename_L = ""
+    hwCorrectionFilename_R = ""
 
 
 class MeasurementResult:
@@ -52,9 +71,16 @@ class MeasurementResult:
 
     # Public fields
     settings = 0
-    computedImpulseResponse = 0
-    partialIR_Left = 0
-    partialIR_Right = 0
+
+    rawIR_Left = 0
+    rawIR_Right = 0
+
+    outputIR_Left = 0
+    outputIR_Right = 0
+
+    # computedImpulseResponse = 0
+    # partialIR_Left = 0
+    # partialIR_Right = 0
 
 
 class SoundCard:
@@ -79,3 +105,23 @@ class SoundCard:
     bitDepths = -1
     inputLatency = -1
     outputLatency = -1
+
+
+class ImpulseResponse:
+    """
+    Impulse response definition class. Used to share impulse responses with associated metadata.
+
+    Joe.
+    """
+
+    # Class constructor
+    def __init__(self, impulseResponseVector=None):
+        self.data = []
+        self.impulseResponse = impulseResponseVector
+        if impulseResponseVector is not None:
+            self.lengthSamples = len(impulseResponseVector)
+
+    impulseResponse = None
+    samplingFrequency = 44100
+    bitDepth = 16
+    lengthSamples = -1

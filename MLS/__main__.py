@@ -40,6 +40,25 @@ if __name__ == "__main__":
     # Checks if window was closed or if the "start" button was clicked
     while not isinstance(_returnedValue, bool):
 
+        # # To force single mode, with calibration:
+        #
+        # from MLS.data_layer import wav_files_handling
+        # delay = wav_files_handling.readWavImpulseResponseFile("/Users/maese/Documents/rode_compensation.wav")
+        # _returnedValue.calibration_Left = delay.impulseResponse
+
+        # # To force dual mode
+        #
+        # _returnedValue.dualChannelMode = True
+
+        # # To include the calibration from the USB sound card
+        #
+        # from MLS.data_layer import wav_files_handling
+        # _leftCalibrationIR = wav_files_handling.readWavImpulseResponseFile("/Users/maese/Documents/usb_card_compensation_L.wav")
+        # _returnedValue.calibration_Left = _leftCalibrationIR.impulseResponse
+        # _rightCalibrationIR = wav_files_handling.readWavImpulseResponseFile("/Users/maese/Documents/usb_card_compensation_R.wav")
+        # _returnedValue.calibration_Right = _rightCalibrationIR.impulseResponse
+
+
         # Executes the measurement(s)
         print language_strings.TEXT_36
         measurementResult = measurement.executeMeasurement(_returnedValue)

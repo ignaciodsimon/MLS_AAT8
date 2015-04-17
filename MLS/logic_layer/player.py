@@ -88,7 +88,7 @@ def _convertStreamToChannel(monoStream):
     _channelL = [0]*(len(monoStream)/2)
 
     _sampIndex = 0
-    for n in range(0, len(monoStream)-2, 2):
+    for n in range(0, len(monoStream)-1, 2):
 
         _channelL[_sampIndex] = _twosComplementToInt(ord(monoStream[n+1]), ord(monoStream[n]))
 

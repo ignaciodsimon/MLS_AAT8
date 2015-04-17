@@ -22,7 +22,7 @@ BACKGROUND_COLOR = "#10547F"
 FOREGROUND_COLOR = "#FFFFFF"
 TOP_BANNER_FILENAME = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) \
                       + "/top_banner.gif"
-WINDOW_SIZE = "910x570"
+WINDOW_SIZE = "1220x570"
 
 # Text strings
 WINDOW_TITLE = "Impulse response measuring system - AAU 2015"
@@ -109,6 +109,21 @@ def _loadDeviceLists(inputDeviceCombo, inputDevicesVar, outputDeviceCombo, outpu
                                                    inputDeviceLabelText, None)
     interface_callbacks.changedOutputDeviceCallBack(outputDevicesVar.get(), outputAudioInterfaces,
                                                     outputDeviceLabelText, None)
+
+
+def setChildWidgetsEnabled(parentWidget, enabled=True):
+    """
+    Sets the enabled property of all children widgets.
+
+    :param parentWidget: Widget whose children shall be changed!
+    :param enabled: True / False, Enable /Disable
+    """
+
+    for child in parentWidget.winfo_children():
+        if enabled:
+            child.configure(state="normal")
+        else:
+            child.configure(state="disabled")
 
 
 def buildInterface(defaultMeasurementSetup=None):
@@ -270,13 +285,23 @@ def buildInterface(defaultMeasurementSetup=None):
                            background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _decayInputEntry.place(x=200, y=180)
 
-    _measurementSettingsRecoverDefaultValuesButton = Tkinter.Button(_measurementSettingFrame, text=language_strings.TEXT_14,
-                                                                   command=lambda: interface_callbacks.
-                                                                   recoverDefaultValuesCallback(_userValues_mlsLength,
-                                                                                                _userValues_amplitude,
-                                                                                                _userValues_predelay,
-                                                                                                _userValues_decay,
-                                                                                                defaultMeasurementSetup))
+    _measurementSettingsRecoverDefaultValuesButton = Tkinter.Button(_measurementSettingFrame,
+                                                                    text=language_strings.TEXT_14,
+                                                                    command=lambda: interface_callbacks.
+                                                                    recoverDefaultValuesCallback(
+                                                                        _userValues_mlsLength,
+                                                                        _userValues_amplitude,
+                                                                        _userValues_predelay,
+                                                                        _userValues_decay,
+                                                                        _averagesEntry_Variable,
+                                                                        _plotOutputDataCheck,
+                                                                        _saveDataToFileCheck,
+                                                                        defaultMeasurementSetup,
+                                                                        _channelModeVar,
+                                                                        _hwIRCorrectionEnabledCheckVar,
+                                                                        _hwCorrectionFilename_L_Variable,
+                                                                        _hwCorrectionFilename_R_Variable))
+
     _measurementSettingsRecoverDefaultValuesButton.config(highlightbackground=BACKGROUND_COLOR,
                                                          bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     _measurementSettingsRecoverDefaultValuesButton.place(x=20, y=230)
@@ -341,16 +366,52 @@ def buildInterface(defaultMeasurementSetup=None):
     _plotOutputDataLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
     _plotOutputDataLabel.place(x=35, y=80)
 
-    # -----------------------
-    #  Frame 4 - Output data
-    # -----------------------
+    # ---------------------------------
+    #  Frame 4 - Channel configuration
+    # ---------------------------------
 
     _executeMeasurementFrame = Tkinter.LabelFrame(_root,
-                                                 text=language_strings.TEXT_20,
-                                                 width=430,
-                                                 height=135)
+                                                  text=language_strings.TEXT_20,
+                                                  width=430,
+                                                  height=135)
     _executeMeasurementFrame.place(x=470, y=395)
     _executeMeasurementFrame.configure(font=('', 0, 'bold'), background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+
+    _channelModeLabel = Tkinter.Label(_executeMeasurementFrame, text=language_strings.TEXT_43)
+    _channelModeLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    _channelModeLabel.place(x=20, y=10)
+
+    _channelModeVar = Tkinter.IntVar()
+    _channelModeVar.set(0)
+    _channelModeVar.trace("w", lambda *args: setChildWidgetsEnabled(_hwIRCorrectionFrame, enabled=_channelModeVar.get()))
+    _singleChannelModeRadioButton = Tkinter.Radiobutton(_executeMeasurementFrame, text="",
+                                                        variable=_channelModeVar, value=0,
+                                                        command=lambda: setChildWidgetsEnabled(_hwIRCorrectionFrame, False))
+    _singleChannelModeRadioButton.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    _singleChannelModeRadioButton.place(x=40, y=40)
+    _singleChannelModeLabel = Tkinter.Label(_executeMeasurementFrame, text=language_strings.TEXT_44)
+    _singleChannelModeLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    _singleChannelModeLabel.place(x=70, y=40)
+
+    _dualChannelModeRadioButton = Tkinter.Radiobutton(_executeMeasurementFrame, text="",
+                                                      variable=_channelModeVar, value=1,
+                                                      command=lambda: setChildWidgetsEnabled(_hwIRCorrectionFrame, True))
+    _dualChannelModeRadioButton.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    _dualChannelModeRadioButton.place(x=40, y=70)
+    _dualChannelModeLabel = Tkinter.Label(_executeMeasurementFrame, text=language_strings.TEXT_45)
+    _dualChannelModeLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    _dualChannelModeLabel.place(x=70, y=70)
+
+    _preAveragesLabel = Tkinter.Label(_executeMeasurementFrame, text=language_strings.TEXT_22)
+    _preAveragesLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    _preAveragesLabel.place(x=230, y=10)
+
+    _averagesEntry_Variable = Tkinter.StringVar()
+    _averagesEntry_Variable.set("1")
+    _averagesEntry = Tkinter.Entry(_executeMeasurementFrame, textvariable=_averagesEntry_Variable, width=8)
+    _averagesEntry.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR,
+                          highlightbackground=BACKGROUND_COLOR,  justify=Tkinter.RIGHT)
+    _averagesEntry.place(x=345, y=10)
 
     _shouldStartMeasurementVar = Tkinter.BooleanVar()
     _shouldStartMeasurementVar.set(False)
@@ -364,20 +425,65 @@ def buildInterface(defaultMeasurementSetup=None):
     _executeMeasurementButton.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
     _executeMeasurementButton.place(x=350, y=80)
 
-    _executeMeasurementLabel = Tkinter.Label(_executeMeasurementFrame, text=language_strings.TEXT_22)
-    _executeMeasurementLabel.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
-    _executeMeasurementLabel.place(x=20, y=10)
+    # ----------------------------
+    #  Frame 5 - HW IR Correction
+    # ----------------------------
+
+    _hwIRCorrectionFrame = Tkinter.LabelFrame(_root,
+                                                  text=language_strings.TEXT_46,
+                                                  width=300,
+                                                  height=150)
+    _hwIRCorrectionFrame.place(x=910, y=90)
+    _hwIRCorrectionFrame.configure(font=('', 0, 'bold'), background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+
+    _hwIRCorrectionEnabled_Label = Tkinter.Label(_hwIRCorrectionFrame, text=language_strings.TEXT_51)
+    _hwIRCorrectionEnabled_Label.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    _hwIRCorrectionEnabled_Label.place(x=40, y=10)
+    _hwIRCorrectionEnabledCheckVar = Tkinter.IntVar()
+    _hwIRCorrectionEnabledCheckVar.set(False)
+    _hwIRCorrectionEnabledCheck = Tkinter.Checkbutton(_hwIRCorrectionFrame, text="", variable=_hwIRCorrectionEnabledCheckVar)
+    _hwIRCorrectionEnabledCheck.configure(background=BACKGROUND_COLOR)
+    _hwIRCorrectionEnabledCheck.place(x=10, y=10)
+
+
+
+    _hwIRCorrection_L_Label = Tkinter.Label(_hwIRCorrectionFrame, text=language_strings.TEXT_47)
+    _hwIRCorrection_L_Label.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    _hwIRCorrection_L_Label.place(x=10, y=47)
+    _hwCorrectionFilename_L_Variable = Tkinter.StringVar()
+    _hwCorrectionFilename_L_Variable.set("")
+    _hwCorrection_L_Entry = Tkinter.Entry(_hwIRCorrectionFrame, textvariable=_hwCorrectionFilename_L_Variable, width=25)
+    _hwCorrection_L_Entry.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR,
+                          highlightbackground=BACKGROUND_COLOR,  justify=Tkinter.RIGHT)
+    _hwCorrection_L_Entry.place(x=30, y=45)
+
+    _loadHWIRCorrection_L_Button = Tkinter.Button(_hwIRCorrectionFrame, text=language_strings.TEXT_49)
+    _loadHWIRCorrection_L_Button.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR,
+                                        command=lambda: interface_callbacks.
+                                        openFileCallback(_hwCorrectionFilename_L_Variable))
+    _loadHWIRCorrection_L_Button.place(x=245, y=45)
+
+    _hwIRCorrection_R_Label = Tkinter.Label(_hwIRCorrectionFrame, text=language_strings.TEXT_48)
+    _hwIRCorrection_R_Label.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR)
+    _hwIRCorrection_R_Label.place(x=10, y=87)
+    _hwCorrectionFilename_R_Variable = Tkinter.StringVar()
+    _hwCorrectionFilename_R_Variable.set("")
+    _hwCorrection_R_Entry = Tkinter.Entry(_hwIRCorrectionFrame, textvariable=_hwCorrectionFilename_R_Variable, width=25)
+    _hwCorrection_R_Entry.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR,
+                          highlightbackground=BACKGROUND_COLOR,  justify=Tkinter.RIGHT)
+    _hwCorrection_R_Entry.place(x=30, y=85)
+
+    _loadHWIRCorrection_R_Button = Tkinter.Button(_hwIRCorrectionFrame, text=language_strings.TEXT_50)
+    _loadHWIRCorrection_R_Button.config(highlightbackground=BACKGROUND_COLOR, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR,
+                                        command=lambda: interface_callbacks.
+                                        openFileCallback(_hwCorrectionFilename_R_Variable))
+    _loadHWIRCorrection_R_Button.place(x=245, y=85)
+
+    # -- Status bar --
 
     _status = Tkinter.Label(_root, text=language_strings.TEXT_23,
                            bd=1, relief=Tkinter.SUNKEN, anchor=Tkinter.W)
     _status.pack(side=Tkinter.BOTTOM, fill=Tkinter.X)
-
-    _averagesEntry_Variable = Tkinter.StringVar()
-    _averagesEntry_Variable.set("1")
-    _averagesEntry = Tkinter.Entry(_executeMeasurementFrame, textvariable=_averagesEntry_Variable, width=10)
-    _averagesEntry.config(background=BACKGROUND_COLOR, foreground=FOREGROUND_COLOR,
-                          highlightbackground=BACKGROUND_COLOR,  justify=Tkinter.RIGHT)
-    _averagesEntry.place(x=170, y=10)
 
     # ---------------------------
     #  Loads data into interface
@@ -387,7 +493,11 @@ def buildInterface(defaultMeasurementSetup=None):
     interface_callbacks.recoverDefaultValuesCallback(_userValues_mlsLength, _userValues_amplitude,
                                                      _userValues_predelay, _userValues_decay,
                                                      _averagesEntry_Variable, _plotOutputDataCheck,
-                                                     _saveDataToFileCheck, defaultMeasurementSetup)
+                                                     _saveDataToFileCheck, defaultMeasurementSetup,
+                                                     _channelModeVar,
+                                                     _hwIRCorrectionEnabledCheckVar,
+                                                     _hwCorrectionFilename_L_Variable,
+                                                     _hwCorrectionFilename_R_Variable)
 
     # Loads combos
     _loadDeviceLists(_inputDeviceCombo, _inputDevicesVar, _outputDeviceCombo, _outputDevicesVar)
@@ -410,8 +520,16 @@ def buildInterface(defaultMeasurementSetup=None):
         _measurementSettings.shouldPlot = bool(_plotOutputDataCheck.get())
         _measurementSettings.shouldSaveToFile = bool(_saveDataToFileCheck.get())
         _measurementSettings.shouldSaveToFileFilename = _saveDataToFile_variable.get()
-        _measurementSettings.numberOfAverages = int(_averagesEntry_Variable.get())
+        _measurementSettings.numberOfPreAverages = int(_averagesEntry_Variable.get())
+
+        if _channelModeVar.get():
+            _measurementSettings.dualChannelMode = True
+
+        _measurementSettings.hwCorrectionFilename_L = _hwCorrectionFilename_L_Variable.get()
+        _measurementSettings.hwCorrectionFilename_R = _hwCorrectionFilename_R_Variable.get()
+        _measurementSettings.shouldUseHWCorrection = _hwIRCorrectionEnabledCheckVar.get()
 
         return _measurementSettings
+
     else:
         return False
