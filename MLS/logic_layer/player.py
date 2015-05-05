@@ -109,9 +109,9 @@ def convertChannelToStream(inputChannel, normalize=False):
 
     # Calculates normalization value to -3dBFS
     if normalize:
-        _normalizationValue = max(inputChannel) * pow(10.0, 3/20.0)
+        _normalizationValue = float(max(inputChannel)) #* pow(10.0, 3/20.0)
     else:
-        _normalizationValue = 1
+        _normalizationValue = r1
 
     _outputStream = ''
     for n in range(len(inputChannel)):

@@ -4,6 +4,7 @@ Handles the operations with the results from the measurement.
 Joe.
 """
 
+import numpy
 from MLS.data_layer import wav_files_handling
 from MLS.type_classes import type_classes
 
@@ -27,6 +28,13 @@ def saveResultsToFile(measurementResult):
         else:
             _leftIRFilename = measurementResult.settings.shouldSaveToFileFilename + "_L.wav"
             _rightIRFilename = measurementResult.settings.shouldSaveToFileFilename + "_L.wav"
+
+        # # TODO: change this to normalize properly
+        # _normalizationValue = max(max(numpy.abs(measurementResult.outputIR_Left)),
+        #                           max(numpy.abs(measurementResult.outputIR_Right)))
+        # measurementResult.outputIR_Left = numpy.divide(measurementResult.outputIR_Left, _normalizationValue)
+        # measurementResult.outputIR_Right = numpy.divide(measurementResult.outputIR_Right, _normalizationValue)
+        measurementResult.settings.normalizeOutput = True
 
         wav_files_handling.saveImpulseResponseToWav(type_classes.ImpulseResponse(measurementResult.outputIR_Left),
                                                     _leftIRFilename,
