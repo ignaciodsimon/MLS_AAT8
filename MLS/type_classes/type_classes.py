@@ -29,7 +29,7 @@ class MeasurementSettings:
     decayTime = 5.0
     inputDevice = -1
     outputDevice = -1
-    normalizeOutput = 1
+    normalizeOutput = True
 
     shouldPlot = False
     shouldSaveToFile = False
