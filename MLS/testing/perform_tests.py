@@ -18,10 +18,10 @@ if __name__ == "__main__":
     #  PART 1 - TESTING MLS GENERATION
     # ---------------------------------
 
-    print "Generating MLS signals ..."
-    signal_order_3 = generate_mls.generateMLS(sequenceLength=pow(2, 3))
-    signal_order_7 = generate_mls.generateMLS(sequenceLength=pow(2, 7))
-    signal_order_15 = generate_mls.generateMLS(sequenceLength=pow(2, 15))
+    # print "Generating MLS signals ..."
+    # signal_order_3 = generate_mls.generateMLS(sequenceLength=pow(2, 3))
+    # signal_order_7 = generate_mls.generateMLS(sequenceLength=pow(2, 7))
+    # signal_order_15 = generate_mls.generateMLS(sequenceLength=pow(2, 15))
     #
     # print "Computing FFT of generated signals ..."
     # fft_order_3 = numpy.abs(numpy.fft.fft(signal_order_3, n=pow(2, 3)-1))
@@ -212,7 +212,7 @@ if __name__ == "__main__":
 
 
     # AGAIN BUT THIS TIME WITH ORDER 15
-    inputSignal = signal_order_15
+    # inputSignal = signal_order_15
 
     # print "Generating output with convolution ..."
     # output = numpy.convolve(inputSignal, known_h)
@@ -239,7 +239,7 @@ if __name__ == "__main__":
     # plot.xlabel("Estimated IR")
     # plot.show()
 
-    print "Saving plots to PDF ..."
+    # print "Saving plots to PDF ..."
     #
     # fig = plot.figure(dpi=60)
     # F = plot.gcf()
@@ -441,117 +441,154 @@ if __name__ == "__main__":
 
     # AKG-414 MICROPHONE
 
-    wf = wave.open("IR_comparison/melisa_414_chamber_1.wav", "rb")
-    sampleFormat = wf.getsampwidth()    # 16 bit
-    channels = wf.getnchannels()        # 2 channels
-    sampleRate = wf.getframerate()      # 44100
-    framesPerBuffer = 1024              # chunk size
-    frames = wf.readframes(wf.getnframes())
-    melisa_414 = player._convertStreamToChannel(frames)
-    melisa_414 = melisa_414[440:600]
-    melisa_414 = numpy.divide(melisa_414, float(max(melisa_414)))
+    # wf = wave.open("IR_comparison/melisa_414_chamber_1.wav", "rb")
+    # sampleFormat = wf.getsampwidth()    # 16 bit
+    # channels = wf.getnchannels()        # 2 channels
+    # sampleRate = wf.getframerate()      # 44100
+    # framesPerBuffer = 1024              # chunk size
+    # frames = wf.readframes(wf.getnframes())
+    # melisa_414 = player._convertStreamToChannel(frames)
+    # melisa_414 = melisa_414[440:600]
+    # melisa_414 = numpy.divide(melisa_414, float(max(melisa_414)))
+    #
+    # wf = wave.open("IR_comparison/oursystem_414_chamber_1.wav", "rb")
+    # sampleFormat = wf.getsampwidth()    # 16 bit
+    # channels = wf.getnchannels()        # 2 channels
+    # sampleRate = wf.getframerate()      # 44100
+    # framesPerBuffer = 1024              # chunk size
+    # frames = wf.readframes(wf.getnframes())
+    # oursystem_414 = player._convertStreamToChannel(frames)
+    # oursystem_414 = oursystem_414[440-3:600-3]
+    # oursystem_414 = numpy.divide(oursystem_414, float(max(oursystem_414)))
+    #
+    # fig = plot.figure(dpi=60)
+    # F = plot.gcf()
+    # Size = F.get_size_inches()
+    # F.set_size_inches(8, 4)
+    # plot.subplots_adjust(left=0.12, right=0.95, bottom=0.14, top=0.92)
+    # plot.plot(melisa_414, 'r')
+    # plot.plot(oursystem_414, 'g')
+    # plot.xlabel("Samples")
+    # plot.ylabel("Amplitude")
+    # plot.grid()
+    # plot.axis([1, 150, -2, 1.25])
+    # plot.legend(["Commercial MLS system", "Developed software"])
+    # plot.title("AKG-414 microphone IR measured with the two systems")
+    # pp = PdfPages('ir_systems_comparison_akg_414.pdf')
+    # pp.savefig(fig)
+    # pp.close()
+    #
+    # # ROOM
+    #
+    # wf = wave.open("IR_comparison/melisa_genIR10_room.wav", "rb")
+    # sampleFormat = wf.getsampwidth()    # 16 bit
+    # channels = wf.getnchannels()        # 2 channels
+    # sampleRate = wf.getframerate()      # 44100
+    # framesPerBuffer = 1024              # chunk size
+    # frames = wf.readframes(wf.getnframes())
+    # melisa_room = player._convertStreamToChannel(frames)
+    # melisa_room = melisa_room[420:570]
+    # melisa_room = numpy.divide(melisa_room, float(max(melisa_room)))
+    #
+    # wf = wave.open("IR_comparison/oursystem_genIR10_room.wav", "rb")
+    # sampleFormat = wf.getsampwidth()    # 16 bit
+    # channels = wf.getnchannels()        # 2 channels
+    # sampleRate = wf.getframerate()      # 44100
+    # framesPerBuffer = 1024              # chunk size
+    # frames = wf.readframes(wf.getnframes())
+    # oursystem_room = player._convertStreamToChannel(frames)
+    # oursystem_room = oursystem_room[420-3:570-3]
+    # oursystem_room = numpy.divide(oursystem_room, float(max(oursystem_room)))
+    #
+    # fig = plot.figure(dpi=60)
+    # F = plot.gcf()
+    # Size = F.get_size_inches()
+    # F.set_size_inches(8, 4)
+    # plot.subplots_adjust(left=0.12, right=0.95, bottom=0.14, top=0.92)
+    # plot.plot(melisa_room, 'r')
+    # plot.plot(oursystem_room, 'g')
+    # plot.xlabel("Samples")
+    # plot.ylabel("Amplitude")
+    # plot.grid()
+    # plot.axis([1, 150, -1.25, 1.25])
+    # plot.legend(["Commercial MLS system", "Developed software"])
+    # plot.title("Standard listening room IR measured with the two systems")
+    # pp = PdfPages('ir_systems_comparison_room.pdf')
+    # pp.savefig(fig)
+    # pp.close()
+    #
+    # # SHURE SM-58
+    #
+    # wf = wave.open("IR_comparison/melisa_shure_chamber_1.wav", "rb")
+    # sampleFormat = wf.getsampwidth()    # 16 bit
+    # channels = wf.getnchannels()        # 2 channels
+    # sampleRate = wf.getframerate()      # 44100
+    # framesPerBuffer = 1024              # chunk size
+    # frames = wf.readframes(wf.getnframes())
+    # melisa_shure = player._convertStreamToChannel(frames)
+    # melisa_shure = melisa_shure[440:540]
+    # melisa_shure = numpy.divide(melisa_shure, float(max(melisa_shure)))
+    #
+    # wf = wave.open("IR_comparison/oursystem_shure_chamber_1.wav", "rb")
+    # sampleFormat = wf.getsampwidth()    # 16 bit
+    # channels = wf.getnchannels()        # 2 channels
+    # sampleRate = wf.getframerate()      # 44100
+    # framesPerBuffer = 1024              # chunk size
+    # frames = wf.readframes(wf.getnframes())
+    # oursystem_shure = player._convertStreamToChannel(frames)
+    # oursystem_shure = oursystem_shure[440-3:540-3]
+    # oursystem_shure = numpy.divide(oursystem_shure, float(max(oursystem_shure)))
+    #
+    # fig = plot.figure(dpi=60)
+    # F = plot.gcf()
+    # Size = F.get_size_inches()
+    # F.set_size_inches(8, 4)
+    # plot.subplots_adjust(left=0.12, right=0.95, bottom=0.14, top=0.92)
+    # plot.plot(melisa_shure, 'r')
+    # plot.plot(oursystem_shure, 'g')
+    # plot.xlabel("Samples")
+    # plot.ylabel("Amplitude")
+    # plot.grid()
+    # plot.axis([1, 100, -1.75, 1.25])
+    # plot.legend(["Commercial MLS system", "Developed software"])
+    # plot.title("Shure SM-58 microphone IR measured with the two systems")
+    # pp = PdfPages('ir_systems_comparison_shure.pdf')
+    # pp.savefig(fig)
+    # pp.close()
 
-    wf = wave.open("IR_comparison/oursystem_414_chamber_1.wav", "rb")
-    sampleFormat = wf.getsampwidth()    # 16 bit
-    channels = wf.getnchannels()        # 2 channels
-    sampleRate = wf.getframerate()      # 44100
-    framesPerBuffer = 1024              # chunk size
-    frames = wf.readframes(wf.getnframes())
-    oursystem_414 = player._convertStreamToChannel(frames)
-    oursystem_414 = oursystem_414[440-3:600-3]
-    oursystem_414 = numpy.divide(oursystem_414, float(max(oursystem_414)))
+    # ---------------------------------------
+    #  PART 7 - TESTING THE COMPUTATION TIME
+    # ---------------------------------------
 
-    fig = plot.figure(dpi=60)
-    F = plot.gcf()
-    Size = F.get_size_inches()
-    F.set_size_inches(8, 4)
-    plot.subplots_adjust(left=0.12, right=0.95, bottom=0.14, top=0.92)
-    plot.plot(melisa_414, 'r')
-    plot.plot(oursystem_414, 'g')
-    plot.xlabel("Samples")
-    plot.ylabel("Amplitude")
-    plot.grid()
-    plot.axis([1, 150, -2, 1.25])
-    plot.legend(["Commercial MLS system", "Developed software"])
-    plot.title("AKG-414 microphone IR measured with the two systems")
-    pp = PdfPages('ir_systems_comparison_akg_414.pdf')
-    pp.savefig(fig)
-    pp.close()
+    # import timeit
+    # print "Testing MLS signal generation function ..."
+    # amount_of_iterations = 100
+    # _time_MLS = timeit.timeit("generate_mls.generateMLS(sequenceLength=pow(2, 15))",
+    #                           setup="from MLS.logic_layer import generate_mls",
+    #                           number=amount_of_iterations)
+    # print "  time in seconds: ", _time_MLS / amount_of_iterations
 
-    # ROOM
+    # print "Testing multitasking execution time difference ..."
+    # from MLS.logic_layer import parallel_functions
+    # import datetime
+    #
+    # number_of_iterations = 100
+    # total_time = 0
+    #
+    # def dummyFunction1():
+    #     time_started = datetime.datetime.now()
+    #     return time_started
+    #
+    # def dummyFunction2():
+    #     time_started = datetime.datetime.now()
+    #     return time_started
+    #
+    # for _n in range(number_of_iterations):
+    #     [time1, time2] = parallel_functions.runInParallel(function1=dummyFunction1, f1args=[], function2=dummyFunction2, f2args=[])
+    #     total_time += (time2 - time1).total_seconds() * 1000
+    #
+    # delay = total_time / number_of_iterations
+    # print "  difference in milliseconds:", delay
+    # print "  which means a difference of ", delay / 1000 * 44100, "(samples)"
 
-    wf = wave.open("IR_comparison/melisa_genIR10_room.wav", "rb")
-    sampleFormat = wf.getsampwidth()    # 16 bit
-    channels = wf.getnchannels()        # 2 channels
-    sampleRate = wf.getframerate()      # 44100
-    framesPerBuffer = 1024              # chunk size
-    frames = wf.readframes(wf.getnframes())
-    melisa_room = player._convertStreamToChannel(frames)
-    melisa_room = melisa_room[420:570]
-    melisa_room = numpy.divide(melisa_room, float(max(melisa_room)))
-
-    wf = wave.open("IR_comparison/oursystem_genIR10_room.wav", "rb")
-    sampleFormat = wf.getsampwidth()    # 16 bit
-    channels = wf.getnchannels()        # 2 channels
-    sampleRate = wf.getframerate()      # 44100
-    framesPerBuffer = 1024              # chunk size
-    frames = wf.readframes(wf.getnframes())
-    oursystem_room = player._convertStreamToChannel(frames)
-    oursystem_room = oursystem_room[420-3:570-3]
-    oursystem_room = numpy.divide(oursystem_room, float(max(oursystem_room)))
-
-    fig = plot.figure(dpi=60)
-    F = plot.gcf()
-    Size = F.get_size_inches()
-    F.set_size_inches(8, 4)
-    plot.subplots_adjust(left=0.12, right=0.95, bottom=0.14, top=0.92)
-    plot.plot(melisa_room, 'r')
-    plot.plot(oursystem_room, 'g')
-    plot.xlabel("Samples")
-    plot.ylabel("Amplitude")
-    plot.grid()
-    plot.axis([1, 150, -1.25, 1.25])
-    plot.legend(["Commercial MLS system", "Developed software"])
-    plot.title("Standard listening room IR measured with the two systems")
-    pp = PdfPages('ir_systems_comparison_room.pdf')
-    pp.savefig(fig)
-    pp.close()
-
-    # SHURE SM-58
-
-    wf = wave.open("IR_comparison/melisa_shure_chamber_1.wav", "rb")
-    sampleFormat = wf.getsampwidth()    # 16 bit
-    channels = wf.getnchannels()        # 2 channels
-    sampleRate = wf.getframerate()      # 44100
-    framesPerBuffer = 1024              # chunk size
-    frames = wf.readframes(wf.getnframes())
-    melisa_shure = player._convertStreamToChannel(frames)
-    melisa_shure = melisa_shure[440:540]
-    melisa_shure = numpy.divide(melisa_shure, float(max(melisa_shure)))
-
-    wf = wave.open("IR_comparison/oursystem_shure_chamber_1.wav", "rb")
-    sampleFormat = wf.getsampwidth()    # 16 bit
-    channels = wf.getnchannels()        # 2 channels
-    sampleRate = wf.getframerate()      # 44100
-    framesPerBuffer = 1024              # chunk size
-    frames = wf.readframes(wf.getnframes())
-    oursystem_shure = player._convertStreamToChannel(frames)
-    oursystem_shure = oursystem_shure[440-3:540-3]
-    oursystem_shure = numpy.divide(oursystem_shure, float(max(oursystem_shure)))
-
-    fig = plot.figure(dpi=60)
-    F = plot.gcf()
-    Size = F.get_size_inches()
-    F.set_size_inches(8, 4)
-    plot.subplots_adjust(left=0.12, right=0.95, bottom=0.14, top=0.92)
-    plot.plot(melisa_shure, 'r')
-    plot.plot(oursystem_shure, 'g')
-    plot.xlabel("Samples")
-    plot.ylabel("Amplitude")
-    plot.grid()
-    plot.axis([1, 100, -1.75, 1.25])
-    plot.legend(["Commercial MLS system", "Developed software"])
-    plot.title("Shure SM-58 microphone IR measured with the two systems")
-    pp = PdfPages('ir_systems_comparison_shure.pdf')
-    pp.savefig(fig)
-    pp.close()
+    print "That's all."
