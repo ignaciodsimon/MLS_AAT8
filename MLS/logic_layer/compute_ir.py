@@ -104,13 +104,12 @@ def computeCircularXCorr(signalA, signalB, frequencyBinsFactor=1):
         signalA = list(numpy.multiply(signalA, float(_computeRMSValue(signalB) / _computeRMSValue(signalA))))
 
     # Computes circular cross-correlation using the FFT
-
     _fftLength = len(signalA) * frequencyBinsFactor
 
     _spectrumA = numpy.fft.fft(signalA, _fftLength)
     _spectrumB = numpy.fft.fft(signalB, _fftLength)
 
-    _spectrumProduct = _spectrumA * _spectrumB.conj()
+    _spectrumProduct = numpy.multiply(_spectrumA, _spectrumB.conj())
     _circularXCorr = numpy.fft.ifft(_spectrumProduct, _fftLength).real
 
     return _circularXCorr
