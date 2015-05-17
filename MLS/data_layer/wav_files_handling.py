@@ -36,7 +36,7 @@ def readWavImpulseResponseFile(filename, normalize=True):
     _readFrames = wf.readframes(wf.getnframes())
     _outputIR.impulseResponse = player._convertStreamToChannel(_readFrames)
     if normalize:
-        _outputIR.impulseResponse = numpy.divide(_outputIR.impulseResponse, float(max(_outputIR.impulseResponse)))
+        _outputIR.impulseResponse = numpy.divide(_outputIR.impulseResponse, float(max(numpy.abs(_outputIR.impulseResponse))))
 
     # It is safer to count the length of the IR this way than using the info from WAV file
     _outputIR.lengthSamples = len(_outputIR.impulseResponse)
