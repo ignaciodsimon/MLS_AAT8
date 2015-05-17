@@ -73,12 +73,14 @@ def executeMeasurement(measurementSetting):
     _channelR = numpy.divide(_averagedRight, measurementSetting.numberOfPreAverages)
 
     # Padding with zeros at the end of MLS signal
-    _paddedMLSSignal = [0]*(len(_channelL))
+    _paddedMLSSignal = [1]*(len(_channelL))
     _paddedMLSSignal[0:len(_MLSSignal)] = _MLSSignal
 
     # Computes RAW impulse responses
-    _rawIRLeft = compute_ir.computeCircularXCorr(_channelL, _paddedMLSSignal)
-    _rawIRRight = compute_ir.computeCircularXCorr(_channelR, _paddedMLSSignal)
+    _rawIRLeft = compute_ir.correctSignalWithIR(_channelL, _paddedMLSSignal)
+    _rawIRRight = compute_ir.correctSignalWithIR(_channelR, _paddedMLSSignal)
+    # _rawIRLeft = compute_ir.computeCircularXCorr(_channelL, _paddedMLSSignal)
+    # _rawIRRight = compute_ir.computeCircularXCorr(_channelR, _paddedMLSSignal)
 
     # Creates output object
     _resultData = type_classes.MeasurementResult()
