@@ -1,4 +1,0 @@
-import interface
-
-
-interface.buildInterface()
