@@ -10,6 +10,7 @@ Joe.
 
 # Python imports
 import os
+import sys
 
 # Internal imports
 from MLS.interface_layer import interface_callbacks
@@ -62,7 +63,12 @@ def _loadDeviceLists(inputDeviceCombo, inputDevicesVar, outputDeviceCombo, outpu
 
     Joe.
     """
-    _availableCards = soundcards.getAllSoundCardsInfo()
+
+    try:
+        _availableCards = soundcards.getAllSoundCardsInfo()
+    except Exception as ex:
+        print "ERROR: could not retrieve the soundcard(s) info! Message: ", ex
+        sys.exit()
 
     _inputCardsNames = []
     _outputCardsNames = []
@@ -489,6 +495,7 @@ def buildInterface(defaultMeasurementSetup=None):
     #  Loads data into interface
     # ---------------------------
 
+
     # Sets default values
     interface_callbacks.recoverDefaultValuesCallback(_userValues_mlsLength, _userValues_amplitude,
                                                      _userValues_predelay, _userValues_decay,
@@ -498,10 +505,10 @@ def buildInterface(defaultMeasurementSetup=None):
                                                      _hwIRCorrectionEnabledCheckVar,
                                                      _hwCorrectionFilename_L_Variable,
                                                      _hwCorrectionFilename_R_Variable)
-
+    
     # Loads combos
     _loadDeviceLists(_inputDeviceCombo, _inputDevicesVar, _outputDeviceCombo, _outputDevicesVar)
-
+    
     # Gives control to window manager
     _root.mainloop()
 

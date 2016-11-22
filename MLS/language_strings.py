@@ -60,4 +60,4 @@ TEXT_39 = "Saving done."
 TEXT_40 = "Plotting results ..."
 TEXT_41 = "All done."
 
-TEXT_42 = "https://github.com/jdomin14/MLS_AAT8"
+TEXT_42 = "https://github.com/ignaciodsimon/MLS_AAT8"
